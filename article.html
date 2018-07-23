@@ -4,176 +4,61 @@
         <meta charset="utf-8">
         <title>D3 Test</title>
         <script src="https://d3js.org/d3.v5.js"></script>
-        <script src="data.js">
+        <script src="buildFigure.js">
         </script>
     </head>
     <body>
             <header>
                     <h1>Simpson's paradox</h1>
                   </header>
+                  <p>
+                    Some text and this is the first graphics:
+                  </p>
                   <svg id="experimental" style="background: grey">
-                    <g id=groupW>
-                      <g id=upperleft></g>     <g id=upperright></g>
-                      <g id=lowerleft></g>     <g id=lowerright></g>
-                    </g>
-                    <g id=groupM>
-                      <g id=upperleft></g>     <g id=upperright></g>
-                      <g id=lowerleft></g>     <g id=lowerright></g>
-                    </g>
                   </svg>
-                  <script>
+                  <script>//
                         var dataW = {Nx: 60, Ny: 24, Nx11: 54, Nx12: 6, Nx21: 42, Nx22: 18, Ny1: 8, Ny2: 16};
                         var dataM = {Nx: 60, Ny: 24, Nx11: 51, Nx12: 9, Nx21: 39, Nx22: 21, Ny1: 20, Ny2: 4};
+                        var graphicalDataW = {padding: 1, scale: 5, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: true, subdivideHori: true};
+                        var graphicalDataM = {padding: 1, scale: 5, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: false, subdivideHori: true};
                         var paddingBlocks = 5 // padding between W and M block
-                        var textPadding = 30;
-                        var graphicalDataW = {padding: 1, scale: 5};
-                        var widthBlockW = dataW.Nx*scale + padding;
-                        var heightBlockW = dataW.Ny*scale + padding;
-                        var graphicalDataM = {padding: 1, scale: 5};
-                        var widthBlockM = dataM.Nx*scale + padding;
-                        var heightBlockM = dataM.Ny*scale + padding;
-                        
-                        var numhori = 60, numverti = 24;  // 
-                        var w = widthBlockW+widthBlockM+paddingBlocks + 2*textPadding;
-                        var h = Math.max(heightBlockW, heightBlockM)  + 2*textPadding;
-
-                        var fig = d3.select("#experimental")
-                            .attr("width", w)
-                            .attr("height", h);
-                        
-                        // now transform blocks
-                        var makeBlocks = function(blockSelection, Nx, Ny, sc, pad, col)
-                        {
-                            for (let i=0; i<Nx; i++){
-                                for (let j=0; j<Ny; j++){
-                                    blockSelection.append("rect")
-                                        .attr("width", sc-pad)
-                                        .attr("height", sc-pad)
-                                        .attr('transform', `translate(${i*sc}, ${j*sc})`)
-                                        .attr("fill", col)
-                                }
-                            }
-                        }
-                        
-                        fig = fig.select("#groupW").attr('transform', `translate(${textPadding}, ${textPadding})`)
-                        var blockUL = fig.select("#upperleft");
-                        makeBlocks(blockUL, dataW.Nx11, dataW.Ny1, graphicalDataW.scale, graphicalDataW.padding, "black")
-
-                        var blockUR = fig.select("#upperright")
-                        makeBlocks(blockUR, dataW.Nx12, dataW.Ny1, graphicalDataW.scale, graphicalDataW.padding, "blue")
-                        blockUR.attr('transform', 'translate(' + (dataW.Nx11*graphicalDataW.scale+graphicalDataW.padding) + ',0)')
-
-                        var blockLL = fig.select("#lowerleft")
-                        makeBlocks(blockLL, dataW.Nx21, dataW.Ny2, graphicalDataW.scale, graphicalDataW.padding, "red")
-                        blockLL.attr('transform', 'translate(0,' + (dataW.Ny1*graphicalDataW.scale+graphicalDataW.padding) + ')')
-
-                        var blockLR = fig.select("#lowerright")
-                        makeBlocks(blockLR, dataW.Nx22, dataW.Ny2, graphicalDataW.scale, graphicalDataW.padding, "magenta")
-                        blockLR.attr('transform', 'translate(' + (dataW.Nx21*graphicalDataW.scale+graphicalDataW.padding) + ',' + (dataW.Ny1*graphicalDataW.scale+graphicalDataW.padding) + ')')
-
-                        fig.append("text")
-                            .attr("x", 0)
-                            .attr("y", dataW.Ny1/2*scale)
-                            .text(dataW.Ny1)
-                            .attr("text-anchor", "end")
-                        fig.append("text")
-                            .attr("x", 0)
-                            .attr("y", (dataW.Ny1 + dataW.Ny2/2)*scale)
-                            .text(dataW.Ny2)
-                            .attr("text-anchor", "end")
-                        fig.append("text")
-                            .attr("x", dataW.Nx11/2*scale)
-                            .attr("y", 0)
-                            .text(dataW.Nx11)
-                            .attr("text-anchor", "middle")
-                        fig.append("text")
-                            .attr("x", (dataW.Nx11 + dataW.Nx12/2)*scale)
-                            .attr("y", 0)
-                            .text(dataW.Nx12)
-                            .attr("text-anchor", "middle")
-                        fig.append("text")
-                            .attr("x", dataW.Nx21/2*scale)
-                            .attr("y", dataW.Ny*scale+15) // 15 is a bad hack to shift text below a bit
-                            .text(dataW.Nx21)
-                            .attr("text-anchor", "middle")
-                        fig.append("text")
-                            .attr("x", (dataW.Nx21 + dataW.Nx22/2)*scale)
-                            .attr("y", dataW.Ny*scale+15) // 15 is a bad hack to shift text below a bit
-                            .text(dataW.Nx22)
-                            .attr("text-anchor", "middle")
-
-
-                        fig = d3.select("#experimental").select("#groupM").attr('transform', `translate(${widthBlockW+paddingBlocks+textPadding}, ${textPadding})`)
-                        var blockUL = fig.select("#upperleft");
-                        makeBlocks(blockUL, dataM.Nx11, dataM.Ny1, graphicalDataM.scale, graphicalDataM.padding, "black")
-
-                        var blockUR = fig.select("#upperright")
-                        makeBlocks(blockUR, dataM.Nx12, dataM.Ny1, graphicalDataM.scale, graphicalDataM.padding, "blue")
-                        blockUR.attr('transform', 'translate(' + (dataM.Nx11*graphicalDataM.scale+graphicalDataM.padding) + ',0)')
-
-                        var blockLL = fig.select("#lowerleft")
-                        makeBlocks(blockLL, dataM.Nx21, dataM.Ny2, graphicalDataM.scale, graphicalDataM.padding, "red")
-                        blockLL.attr('transform', 'translate(0,' + (dataM.Ny1*graphicalDataM.scale+graphicalDataM.padding) + ')')
-
-                        var blockLR = fig.select("#lowerright")
-                        makeBlocks(blockLR, dataM.Nx22, dataM.Ny2, graphicalDataM.scale, graphicalDataM.padding, "magenta")
-                        blockLR.attr('transform', 'translate(' + (dataM.Nx21*graphicalDataM.scale+graphicalDataM.padding) + ',' + (dataM.Ny1*graphicalDataM.scale+graphicalDataM.padding) + ')')
-
-                        fig.append("text")
-                            .attr("x", dataM.Nx*scale)
-                            .attr("y", dataM.Ny1/2*scale)
-                            .text(dataM.Ny1)
-                        fig.append("text")
-                            .attr("x", dataM.Nx*scale)
-                            .attr("y", (dataM.Ny1 + dataM.Ny2/2)*scale)
-                            .text(dataM.Ny2)
-                        fig.append("text")
-                            .attr("x", dataM.Nx11/2*scale)
-                            .attr("y", 0)
-                            .text(dataM.Nx11)
-                            .attr("text-anchor", "middle")
-                        fig.append("text")
-                            .attr("x", (dataM.Nx11 + dataM.Nx12/2)*scale)
-                            .attr("y", 0)
-                            .text(dataM.Nx12)
-                            .attr("text-anchor", "middle")
-                        fig.append("text")
-                            .attr("x", dataM.Nx21/2*scale)
-                            .attr("y", dataM.Ny*scale+15) // 15 is a bad hack to shift text below a bit
-                            .text(dataM.Nx21)
-                            .attr("text-anchor", "middle")
-                        fig.append("text")
-                            .attr("x", (dataM.Nx21 + dataM.Nx22/2)*scale)
-                            .attr("y", dataM.Ny*scale+15) // 15 is a bad hack to shift text below a bit
-                            .text(dataM.Nx22)
-                            .attr("text-anchor", "middle")
+                                                
+                        buildFigure(d3.select("#experimental"), dataW, dataM, graphicalDataW, graphicalDataM, paddingBlocks)
 
                         
+                        
+                    </script>
+                    <br/>
+                    <svg id="experimental2" style="background: grey">
+                        </svg>
+                        <script>//
+                              var dataW = {Nx: 60, Ny: 24, Nx11: 54, Nx12: 6, Nx21: 42, Nx22: 18, Ny1: 8, Ny2: 16};
+                              var dataM = {Nx: 60, Ny: 24, Nx11: 51, Nx12: 9, Nx21: 39, Nx22: 21, Ny1: 20, Ny2: 4};
+                              var graphicalDataW = {padding: 1, scale: 5, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: true, subdivideHori: false};
+                              var graphicalDataM = {padding: 1, scale: 5, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: false, subdivideHori: true};
+                              var paddingBlocks = 5 // padding between W and M block
+                                                      
+                              buildFigure(d3.select("#experimental2"), dataW, dataM, graphicalDataW, graphicalDataM, paddingBlocks)
+      
+                              
+                              
+                          </script>
+                    <br/>
+                    <p>Test</p>
+                    <svg id="test" style="background: grey"></svg>
+                    <script>
+                        var dataWTest = {Nx: 40, Ny: 20, Nx11: 24, Nx12: 16, Nx21: 13, Nx22: 27, Ny1: 11, Ny2: 9};
+                        var dataMTest = {Nx: 120, Ny: 48, Nx11: 102, Nx12: 18, Nx21: 78, Nx22: 42, Ny1: 40, Ny2: 8};
+                        var graphicalDataWTest = {padding: 1, scale: 7, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: true, subdivideHori: true};
+                        var graphicalDataMTest = {padding: 1, scale: 3, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: true, subdivideHori: true};
+                        var paddingBlocksTest = 5 // padding between W and M block
+                        buildFigure(d3.select("#test"), dataWTest, dataMTest, graphicalDataWTest, graphicalDataMTest, paddingBlocksTest)
                     </script>
 
 
 
 
-
-                  <p>
-                    Some text and this is the first graphics:
-                  </p>
-                  <svg id="fig1" style="background:white">
-                        <g id=groupW></g>
-                        <g id=groupM></g>
-                    </svg>
-                    <script src=fig1.js></script>
-                    <p>Bla</p>
-                    <svg id="fig2">
-                            <g id=groupW></g>
-                            <g id=groupM></g>
-                    </svg>
-                    <script src=fig2.js></script>
-                    <p>Bla</p>
-                    <svg id="fig3" style="background:white">
-                            <g id=groupW></g>
-                            <g id=groupM></g>
-                        </svg>
-                    <script src="fig3.js"></script>
+                  
+                  
     </body>
 </html>
