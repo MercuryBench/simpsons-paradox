@@ -1,54 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>D3 Test</title>
-        <script src="https://d3js.org/d3.v5.js"></script>
-        <script src="buildFigure.js">
-        </script>
-    </head>
-    <body>
-            <header>
-                    <h1>Simpson's paradox</h1>
-                  </header>
+<meta charset="utf-8">
+<script src="https://distill.pub/template.v1.js"></script>
+<script src="https://d3js.org/d3.v5.js"></script>
+<script src="buildFigure.js"></script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+
+    <script>    
+    var dataW = {Nx: 60, Ny: 24, Nx11: 54, Nx12: 6, Nx21: 42, Nx22: 18, Ny1: 8, Ny2: 16};
+                        var dataM = {Nx: 60, Ny: 24, Nx11: 51, Nx12: 9, Nx21: 39, Nx22: 21, Ny1: 20, Ny2: 4};
+                        var scale = 9
+    </script>
+
+<script type="text/front-matter">
+  title: "Article Title"
+  description: "Article description"
+  authors:
+  - Philipp Wacker:
+  affiliations:
+  - Friedrich-Alexander-Universität Erlangen-Nürnberg
+</script>
+    <dt-article>
+                  <h1>Simpson's paradox</h1>
                   <p>
-                    Some text and this is the first graphics:
+                    We consider a set of 1440<dt-fn>Not, because this is one percent of the <a href=https://en.wikipedia.org/wiki/144,000>redeemed</a> but because it is a natural
+                        number which is nicely divisible by a lot of other numbers: 1,2,3,4,5,6,8,9,10,12,15,16,18,20,24,30,32,36,40,45,48,60,72,80,90,96,120,144,160,180,240,288,360,480,720,1440.
+                    </dt-fn> women and 1440 men and arrange them nicely in a rectangle 60 by 24, like so:
                   </p>
-                  <svg id="experimental" style="background: grey">
+                  <svg id="figWhole" style="background: white", style="stroke: black">
                   </svg>
                   <script>//
-                        var dataW = {Nx: 60, Ny: 24, Nx11: 54, Nx12: 6, Nx21: 42, Nx22: 18, Ny1: 8, Ny2: 16};
-                        var dataM = {Nx: 60, Ny: 24, Nx11: 51, Nx12: 9, Nx21: 39, Nx22: 21, Ny1: 20, Ny2: 4};
-                        var graphicalDataW = {padding: 1, scale: 5, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: true, subdivideHori: true};
-                        var graphicalDataM = {padding: 1, scale: 5, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: false, subdivideHori: true};
+                        var graphicalDataW = {padding: 1, scale: scale, textPadding: 30, color: ["white", null, null, null], subdivideVert: false, subdivideHori: false};
+                        var graphicalDataM = {padding: 1, scale: scale, textPadding: 30, color: ["white", null, null, null], subdivideVert: false, subdivideHori: false};
                         var paddingBlocks = 5 // padding between W and M block
                                                 
-                        buildFigure(d3.select("#experimental"), dataW, dataM, graphicalDataW, graphicalDataM, paddingBlocks)
-
+                        buildFigure(d3.select("#figWhole"), dataW, dataM, graphicalDataW, graphicalDataM, paddingBlocks)
                         
                         
                     </script>
-                    <br/>
-                    <svg id="experimental2" style="background: grey">
+                    <p>
+                        Next, we group by faculty: applicants for math are colored <font color="red">red</font>, applicants for literature are colored <font color="blue">blue</font>.
+                    </p>
+                    <svg id="figSepGender" style="background: white">
                         </svg>
                         <script>//
-                              var dataW = {Nx: 60, Ny: 24, Nx11: 54, Nx12: 6, Nx21: 42, Nx22: 18, Ny1: 8, Ny2: 16};
-                              var dataM = {Nx: 60, Ny: 24, Nx11: 51, Nx12: 9, Nx21: 39, Nx22: 21, Ny1: 20, Ny2: 4};
-                              var graphicalDataW = {padding: 1, scale: 5, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: true, subdivideHori: false};
-                              var graphicalDataM = {padding: 1, scale: 5, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: false, subdivideHori: true};
+                              var graphicalDataW = {padding: 1, scale: scale, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: true, subdivideHori: false};
+                              var graphicalDataM = {padding: 1, scale: scale, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: true, subdivideHori: false};
                               var paddingBlocks = 5 // padding between W and M block
                                                       
-                              buildFigure(d3.select("#experimental2"), dataW, dataM, graphicalDataW, graphicalDataM, paddingBlocks)
-      
-                              
-                              
+                              buildFigure(d3.select("#figSepGender"), dataW, dataM, graphicalDataW, graphicalDataM, paddingBlocks)
                           </script>
-                    <br/>
-                    <p>Test</p>
-                    <svg id="test" style="background: grey"></svg>
+                    <p>Now we consider each of those four groups separately (i.e. women applying for math, men applying for literature etc.) and build more subgroups according to whether they get accepted or not</p>
+                    <svg id="figAllCategories" style="background: white">
+                    </svg>
+                    <script>//
+                          var graphicalDataW = {padding: 1, scale: scale, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: true, subdivideHori: true};
+                          var graphicalDataM = {padding: 1, scale: scale, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: true, subdivideHori: true};
+                          var paddingBlocks = 5 // padding between W and M block
+                                                  
+                          buildFigure(d3.select("#figAllCategories"), dataW, dataM, graphicalDataW, graphicalDataM, paddingBlocks)
+                      </script>
+
+                      <br/>
+                    <svg id="test" style="background: white"></svg>
                     <script>
-                        var dataWTest = {Nx: 40, Ny: 20, Nx11: 24, Nx12: 16, Nx21: 13, Nx22: 27, Ny1: 11, Ny2: 9};
-                        var dataMTest = {Nx: 120, Ny: 48, Nx11: 102, Nx12: 18, Nx21: 78, Nx22: 42, Ny1: 40, Ny2: 8};
                         var graphicalDataWTest = {padding: 1, scale: 7, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: true, subdivideHori: true};
                         var graphicalDataMTest = {padding: 1, scale: 3, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: true, subdivideHori: true};
                         var paddingBlocksTest = 5 // padding between W and M block
@@ -60,5 +76,5 @@
 
                   
                   
-    </body>
-</html>
+
+</dt-article>

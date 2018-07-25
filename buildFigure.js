@@ -6,7 +6,9 @@ var makeBlocks = function(blockSelection, Nx, Ny, sc, pad, col)
                         .attr("width", sc-pad)
                         .attr("height", sc-pad)
                         .attr('transform', `translate(${i*sc}, ${j*sc})`)
-                        .attr("fill", col)
+                        .attr("stroke", "black")
+                        .attr("fill-opacity", "0.0")
+                        //.attr("fill", col)
                 }
             }
         }
@@ -27,43 +29,94 @@ var buildGroup = function(groupref, data, graphicalData){
     
         
 
-    if (graphicalData.subdivideHori == false){
+    if (graphicalData.subdivideVert == false){
         var blockUL = fig.select("#upperleft");
+        blockUL.append("rect")
+            .attr("id", "backgroundUL")
+            .attr("fill", graphicalData.color[0])
+            .attr("width", data.Nx11*graphicalData.scale)
+            .attr("height", data.Ny1*graphicalData.scale)
         makeBlocks(blockUL, data.Nx11, data.Ny1, graphicalData.scale, graphicalData.padding, graphicalData.color[0])
 
         var blockLL = fig.select("#lowerleft")
+        blockLL.append("rect")
+            .attr("id", "backgroundLL")
+            .attr("fill", graphicalData.color[0])
+            .attr("width", data.Nx21*graphicalData.scale)
+            .attr("height", data.Ny2*graphicalData.scale)
         makeBlocks(blockLL, data.Nx21, data.Ny2, graphicalData.scale, graphicalData.padding, graphicalData.color[0])
         blockLL.attr('transform', 'translate(0,' + (data.Ny1*graphicalData.scale) + ')')
+
         var blockUR = fig.select("#upperright")
+        blockUR.append("rect")
+            .attr("id", "backgroundUR")
+            .attr("fill", graphicalData.color[0])
+            .attr("width", data.Nx12*graphicalData.scale)
+            .attr("height", data.Ny1*graphicalData.scale)
         makeBlocks(blockUR, data.Nx12, data.Ny1, graphicalData.scale, graphicalData.padding, graphicalData.color[0])
         blockUR.attr('transform', 'translate(' + (data.Nx11*graphicalData.scale) + ',0)')
 
         var blockLR = fig.select("#lowerright")
+        blockLR.append("rect")
+            .attr("id", "backgroundLR")
+            .attr("fill", graphicalData.color[0])
+            .attr("width", data.Nx22*graphicalData.scale)
+            .attr("height", data.Ny2*graphicalData.scale)
         makeBlocks(blockLR, data.Nx22, data.Ny2, graphicalData.scale, graphicalData.padding, graphicalData.color[0])
         blockLR.attr('transform', 'translate(' + (data.Nx21*graphicalData.scale) + ',' + (data.Ny1*graphicalData.scale) + ')')
     }
     else{
         var blockUL = fig.select("#upperleft");
+        blockUL.append("rect")
+            .attr("id", "backgroundUL")
+            .attr("fill", graphicalData.color[0])
+            .attr("width", data.Nx11*graphicalData.scale)
+            .attr("height", data.Ny1*graphicalData.scale)
         makeBlocks(blockUL, data.Nx11, data.Ny1, graphicalData.scale, graphicalData.padding, graphicalData.color[0])
 
         var blockLL = fig.select("#lowerleft")
+        blockLL.append("rect")
+            .attr("id", "backgroundLL")
+            .attr("fill", graphicalData.color[2])
+            .attr("width", data.Nx21*graphicalData.scale)
+            .attr("height", data.Ny2*graphicalData.scale)
         makeBlocks(blockLL, data.Nx21, data.Ny2, graphicalData.scale, graphicalData.padding, graphicalData.color[2])
         blockLL.attr('transform', 'translate(0,' + (data.Ny1*graphicalData.scale) + ')')
-        if (graphicalData.subdivideVert == true){
+        if (graphicalData.subdivideHori == true){
             var blockUR = fig.select("#upperright")
+            blockUR.append("rect")
+                .attr("id", "backgroundUR")
+                .attr("fill", graphicalData.color[1])
+                .attr("width", data.Nx12*graphicalData.scale)
+                .attr("height", data.Ny1*graphicalData.scale)
             makeBlocks(blockUR, data.Nx12, data.Ny1, graphicalData.scale, graphicalData.padding, graphicalData.color[1])
             blockUR.attr('transform', 'translate(' + (data.Nx11*graphicalData.scale) + ',0)')
 
             var blockLR = fig.select("#lowerright")
+            blockLR.append("rect")
+                .attr("id", "backgroundLR")
+                .attr("fill", graphicalData.color[3])
+                .attr("width", data.Nx22*graphicalData.scale)
+                .attr("height", data.Ny2*graphicalData.scale)
             makeBlocks(blockLR, data.Nx22, data.Ny2, graphicalData.scale, graphicalData.padding, graphicalData.color[3])
             blockLR.attr('transform', 'translate(' + (data.Nx21*graphicalData.scale) + ',' + (data.Ny1*graphicalData.scale) + ')')
         }
         else{
             var blockUR = fig.select("#upperright")
+            blockUR.append("rect")
+                .attr("id", "backgroundUR")
+                .attr("fill", graphicalData.color[0])
+                .attr("width", data.Nx12*graphicalData.scale)
+                .attr("height", data.Ny1*graphicalData.scale)
             makeBlocks(blockUR, data.Nx12, data.Ny1, graphicalData.scale, graphicalData.padding, graphicalData.color[0])
             blockUR.attr('transform', 'translate(' + (data.Nx11*graphicalData.scale) + ',0)')
             
             var blockLR = fig.select("#lowerright")
+            blockLR.append("rect")
+                .attr("id", "backgroundLR")
+                .attr("fill", graphicalData.color[2])
+                .attr("width", data.Nx22*graphicalData.scale)
+                .attr("height", data.Ny2*graphicalData.scale)
             makeBlocks(blockLR, data.Nx22, data.Ny2, graphicalData.scale, graphicalData.padding, graphicalData.color[2])
             blockLR.attr('transform', 'translate(' + (data.Nx21*graphicalData.scale) + ',' + (data.Ny1*graphicalData.scale) + ')')
 
@@ -71,7 +124,7 @@ var buildGroup = function(groupref, data, graphicalData){
     }
 
     
-    if (graphicalData.subdivideHori == false){
+    if (graphicalData.subdivideVert == false){
         fig.append("text")
         .attr("x", (data.Nx11+data.Nx12)/2*graphicalData.scale)
         .attr("y", 0)
@@ -95,7 +148,7 @@ var buildGroup = function(groupref, data, graphicalData){
             .text(data.Ny2)
             .attr("text-anchor", "end")
         
-        if (graphicalData.subdivideVert == true) {
+        if (graphicalData.subdivideHori == true) {
             fig.append("text")
                 .attr("x", data.Nx11/2*graphicalData.scale)
                 .attr("y", 0)
