@@ -10,7 +10,8 @@
     <script>    
     var dataW = {Nx: 60, Ny: 24, Nx11: 54, Nx12: 6, Nx21: 42, Nx22: 18, Ny1: 8, Ny2: 16};
                         var dataM = {Nx: 60, Ny: 24, Nx11: 51, Nx12: 9, Nx21: 39, Nx22: 21, Ny1: 20, Ny2: 4};
-                        var scale = 9
+                        var scale = 8
+                        var paddingLeft = 50
     </script>
 
 <script type="text/front-matter">
@@ -21,6 +22,9 @@
   affiliations:
   - Friedrich-Alexander-Universität Erlangen-Nürnberg
 </script>
+<style>
+    text {font-size: 8pt}
+</style>
     <dt-article>
                   <h1>Simpson's paradox</h1>
                   <p>
@@ -28,47 +32,47 @@
                         number which is nicely divisible by a lot of other numbers: 1,2,3,4,5,6,8,9,10,12,15,16,18,20,24,30,32,36,40,45,48,60,72,80,90,96,120,144,160,180,240,288,360,480,720,1440.
                     </dt-fn> women and 1440 men and arrange them nicely in a rectangle 60 by 24, like so:
                   </p>
-                  <svg id="figWhole" style="background: white", style="stroke: black">
+                  <svg id="figWhole" style="background: grey", style="stroke: black">
                   </svg>
                   <script>//
-                        var graphicalDataW = {padding: 1, scale: scale, textPadding: 30, color: ["white", null, null, null], subdivideVert: false, subdivideHori: false};
-                        var graphicalDataM = {padding: 1, scale: scale, textPadding: 30, color: ["white", null, null, null], subdivideVert: false, subdivideHori: false};
+                        var graphicalDataW = {padding: 1, scale: scale, textPadding: 30, color: ["white", null, null, null], subdivideVert: false, subdivideHori: false, ratiosVert: false, ratiosHori: false};
+                        var graphicalDataM = {padding: 1, scale: scale, textPadding: 30, color: ["white", null, null, null], subdivideVert: false, subdivideHori: false, ratiosVert: false, ratiosHori: false};
                         var paddingBlocks = 5 // padding between W and M block
                                                 
-                        buildFigure(d3.select("#figWhole"), dataW, dataM, graphicalDataW, graphicalDataM, paddingBlocks)
+                        buildFigure(d3.select("#figWhole"), dataW, dataM, graphicalDataW, graphicalDataM, paddingBlocks, paddingLeft)
                         
                         
                     </script>
                     <p>
-                        Next, we group by faculty: applicants for math are colored <font color="red">red</font>, applicants for literature are colored <font color="blue">blue</font>.
+                        Next, we group by faculty: applicants for math are colored yellow, applicants for literature are colored blue.
                     </p>
-                    <svg id="figSepGender" style="background: white">
+                    <svg id="figSepGender" style="background: grey">
                         </svg>
                         <script>//
-                              var graphicalDataW = {padding: 1, scale: scale, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: true, subdivideHori: false};
-                              var graphicalDataM = {padding: 1, scale: scale, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: true, subdivideHori: false};
+                              var graphicalDataW = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)], subdivideVert: true, subdivideHori: false, ratiosVert: "left", ratiosHori: false};
+                              var graphicalDataM = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)], subdivideVert: true, subdivideHori: false, ratiosVert: "right", ratiosHori: false};
                               var paddingBlocks = 5 // padding between W and M block
                                                       
-                              buildFigure(d3.select("#figSepGender"), dataW, dataM, graphicalDataW, graphicalDataM, paddingBlocks)
+                              buildFigure(d3.select("#figSepGender"), dataW, dataM, graphicalDataW, graphicalDataM, paddingBlocks, paddingLeft)
                           </script>
                     <p>Now we consider each of those four groups separately (i.e. women applying for math, men applying for literature etc.) and build more subgroups according to whether they get accepted or not</p>
-                    <svg id="figAllCategories" style="background: white">
+                    <svg id="figAllCategories" style="background: grey">
                     </svg>
                     <script>//
-                          var graphicalDataW = {padding: 1, scale: scale, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: true, subdivideHori: true};
-                          var graphicalDataM = {padding: 1, scale: scale, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: true, subdivideHori: true};
+                          var graphicalDataW = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)], subdivideVert: true, subdivideHori: true, ratiosVert: false, ratiosHori: true};
+                          var graphicalDataM = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)], subdivideVert: true, subdivideHori: true, ratiosVert: false, ratiosHori: true};
                           var paddingBlocks = 5 // padding between W and M block
                                                   
-                          buildFigure(d3.select("#figAllCategories"), dataW, dataM, graphicalDataW, graphicalDataM, paddingBlocks)
+                          buildFigure(d3.select("#figAllCategories"), dataW, dataM, graphicalDataW, graphicalDataM, paddingBlocks, paddingLeft)
                       </script>
 
                       <br/>
                     <svg id="test" style="background: white"></svg>
                     <script>
-                        var graphicalDataWTest = {padding: 1, scale: 7, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: true, subdivideHori: true};
-                        var graphicalDataMTest = {padding: 1, scale: 3, textPadding: 30, color: ["red", "green", "blue", "yellow"], subdivideVert: true, subdivideHori: true};
+                        var graphicalDataWTest = {padding: 1, scale: 7, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)], subdivideVert: true, subdivideHori: true, ratiosVert: false, ratiosHori: false};
+                        var graphicalDataMTest = {padding: 1, scale: 3, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)], subdivideVert: true, subdivideHori: true, ratiosVert: false, ratiosHori: false};
                         var paddingBlocksTest = 5 // padding between W and M block
-                        buildFigure(d3.select("#test"), dataWTest, dataMTest, graphicalDataWTest, graphicalDataMTest, paddingBlocksTest)
+                        buildFigure(d3.select("#test"), dataWTest, dataMTest, graphicalDataWTest, graphicalDataMTest, paddingBlocksTest, paddingLeft)
                     </script>
 
 
