@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
 <meta charset="utf-8">
 <script src="https://distill.pub/template.v1.js"></script>
 <script src="https://d3js.org/d3.v5.js"></script>
@@ -47,84 +46,102 @@
                     <p>
                         Next, we group by faculty: applicants for math are colored yellow, applicants for literature are colored blue.
                     </p>
-                    <svg id="figSepGender" style="background: grey">
+                    <svg id="figSepGender" onclick="clickFigSepGender()" style="background: grey">
                         </svg>
                         <script>//
-                              var graphicalDataW = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)], subdivideVert: true, subdivideHori: false, ratiosVert: "left", ratiosHori: false};
-                              var graphicalDataM = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)], subdivideVert: true, subdivideHori: false, ratiosVert: "right", ratiosHori: false};
+                              var newColors = [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)];
+                              var graphicalDataW = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: true, subdivideHori: false, ratiosVert: "left", ratiosHori: false};
+                              var graphicalDataM = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: true, subdivideHori: false, ratiosVert: "right", ratiosHori: false};
                               var paddingBlocks = 5 // padding between W and M block
+
                                                       
                               buildFigure(d3.select("#figSepGender"), dataW, dataM, graphicalDataW, graphicalDataM, paddingBlocks, paddingLeft)
+                            // initially, don't show blocks
+                            d3.select("#figSepGender").select("#groupLeft").selectAll(".ratioBar").attr("opacity", 0.0)
+                            d3.select("#figSepGender").select("#groupRight").selectAll(".ratioBar").attr("opacity", 0.0)                         
+                              var clickFigSepGender = function()
+                              {
+                                d3.select("#figSepGender").select("#groupLeft").select("#ratioBarLeftTop").attr("fill", newColors[0])
+                                d3.select("#figSepGender").select("#groupLeft").select("#ratioBarLeftBottom").attr("fill", newColors[2])
+                                d3.select("#figSepGender").select("#groupRight").select("#ratioBarRightTop").attr("fill", newColors[0])
+                                d3.select("#figSepGender").select("#groupRight").select("#ratioBarRightBottom").attr("fill", newColors[2])
+
+                                d3.select("#figSepGender").select("#groupLeft").selectAll(".ratioBar").transition().duration(2000).ease(d3.easeLinear).attr("opacity", 1.0)
+                                d3.select("#figSepGender").select("#groupRight").selectAll(".ratioBar").transition().delay(2000).duration(2000).ease(d3.easeLinear).attr("opacity", 1.0)
+
+                                
+                                
+
+                                d3.select("#figSepGender").select("#groupLeft").select("#upperleft").select("#backgroundUL").transition().duration(2000).ease(d3.easeLinear).attr("fill", newColors[0])
+                                d3.select("#figSepGender").select("#groupLeft").select("#upperright").select("#backgroundUR").transition().duration(2000).ease(d3.easeLinear).attr("fill", newColors[0])
+                                d3.select("#figSepGender").select("#groupLeft").select("#lowerleft").select("#backgroundLL").transition().duration(2000).ease(d3.easeLinear).attr("fill", newColors[2])
+                                d3.select("#figSepGender").select("#groupLeft").select("#lowerright").select("#backgroundLR").transition().duration(2000).ease(d3.easeLinear).attr("fill", newColors[2])
+
+                                d3.select("#figSepGender").select("#groupRight").select("#upperleft").select("#backgroundUL").transition().delay(2000).duration(2000).ease(d3.easeLinear).attr("fill", newColors[0])
+                                d3.select("#figSepGender").select("#groupRight").select("#upperright").select("#backgroundUR").transition().delay(2000).duration(2000).ease(d3.easeLinear).attr("fill", newColors[0])
+                                d3.select("#figSepGender").select("#groupRight").select("#lowerleft").select("#backgroundLL").transition().delay(2000).duration(2000).ease(d3.easeLinear).attr("fill", newColors[2])
+                                d3.select("#figSepGender").select("#groupRight").select("#lowerright").select("#backgroundLR").transition().delay(2000).duration(2000).ease(d3.easeLinear).attr("fill", newColors[2])
+
+
+                              }
+
                           </script>
                     <p>Now we consider each of those four groups separately (i.e. women applying for math, men applying for literature etc.) and build more subgroups according to whether they get accepted or not</p>
-                    <svg id="figAllCategories" style="background: grey">
+                   
+                    
+                    
+                    <svg onclick="clickFigAllCategories()" id="figAllCategories" style="background: grey">
                     </svg>
                     <script>//
-                          var graphicalDataW = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)], subdivideVert: true, subdivideHori: true, ratiosVert: false, ratiosHori: true};
-                          var graphicalDataM = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)], subdivideVert: true, subdivideHori: true, ratiosVert: false, ratiosHori: true};
+                    var newColors = [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)];
+                          var graphicalDataW = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 80, 75), d3.hcl(250, 80, 60), d3.hcl(250, 80, 60)], subdivideVert: true, subdivideHori: true, ratiosVert: false, ratiosHori: true};
+                          var graphicalDataM = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 80, 75), d3.hcl(250, 80, 60), d3.hcl(250, 80, 60)], subdivideVert: true, subdivideHori: true, ratiosVert: false, ratiosHori: true};
                           var paddingBlocks = 5 // padding between W and M block
                                                   
                           buildFigure(d3.select("#figAllCategories"), dataW, dataM, graphicalDataW, graphicalDataM, paddingBlocks, paddingLeft)
+                          
+                          d3.select("#figAllCategories").select("#groupLeft").selectAll(".ratioBar").attr("opacity", 0.0)
+                            d3.select("#figAllCategories").select("#groupRight").selectAll(".ratioBar").attr("opacity", 0.0)    
+                            var clickFigAllCategories = function()
+                              {
+                                d3.select("#figAllCategories").select("#groupLeft").select("#ratioBarTopLeft").attr("fill", newColors[0])
+                                d3.select("#figAllCategories").select("#groupLeft").select("#ratioBarBottomLeft").attr("fill", newColors[2])
+                                d3.select("#figAllCategories").select("#groupLeft").select("#ratioBarTopRight").attr("fill", newColors[1])
+                                d3.select("#figAllCategories").select("#groupLeft").select("#ratioBarBottomRight").attr("fill", newColors[3])
+                                d3.select("#figAllCategories").select("#groupRight").select("#ratioBarTopLeft").style("fill", newColors[0])
+                                d3.select("#figAllCategories").select("#groupRight").select("#ratioBarBottomLeft").attr("fill", newColors[2])
+                                d3.select("#figAllCategories").select("#groupRight").select("#ratioBarTopRight").attr("fill", newColors[1])
+                                d3.select("#figAllCategories").select("#groupRight").select("#ratioBarBottomRight").attr("fill", newColors[3])
+
+                                d3.select("#figAllCategories").select("#groupLeft").selectAll(".ratioBar").transition().duration(2000).ease(d3.easeLinear).attr("opacity", 1.0)
+                                d3.select("#figAllCategories").select("#groupRight").selectAll(".ratioBar").transition().delay(2000).duration(2000).ease(d3.easeLinear).attr("opacity", 1.0)
+
+                                d3.select("#figAllCategories").select("#groupLeft").select("#upperleft").select("#backgroundUL").transition().duration(2000).ease(d3.easeLinear).attr("fill", newColors[0])
+                                d3.select("#figAllCategories").select("#groupLeft").select("#upperright").select("#backgroundUR").transition().duration(2000).ease(d3.easeLinear).attr("fill", newColors[1])
+                                d3.select("#figAllCategories").select("#groupLeft").select("#lowerleft").select("#backgroundLL").transition().duration(2000).ease(d3.easeLinear).attr("fill", newColors[2])
+                                d3.select("#figAllCategories").select("#groupLeft").select("#lowerright").select("#backgroundLR").transition().duration(2000).ease(d3.easeLinear).attr("fill", newColors[3])
+
+                                d3.select("#figAllCategories").select("#groupRight").select("#upperleft").select("#backgroundUL").transition().delay(2000).duration(2000).ease(d3.easeLinear).attr("fill", newColors[0])
+                                d3.select("#figAllCategories").select("#groupRight").select("#upperright").select("#backgroundUR").transition().delay(2000).duration(2000).ease(d3.easeLinear).attr("fill", newColors[1])
+                                d3.select("#figAllCategories").select("#groupRight").select("#lowerleft").select("#backgroundLL").transition().delay(2000).duration(2000).ease(d3.easeLinear).attr("fill", newColors[2])
+                                d3.select("#figAllCategories").select("#groupRight").select("#lowerright").select("#backgroundLR").transition().delay(2000).duration(2000).ease(d3.easeLinear).attr("fill", newColors[3])
+
+
+                              }
                       </script>
 
-                      <br/>
-                    <svg id="test" style="background: white"></svg>
+                    <!--<svg id="test" style="background: white"></svg>
                     <script>
                         var graphicalDataWTest = {padding: 1, scale: 7, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)], subdivideVert: true, subdivideHori: true, ratiosVert: false, ratiosHori: false};
                         var graphicalDataMTest = {padding: 1, scale: 3, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)], subdivideVert: true, subdivideHori: true, ratiosVert: false, ratiosHori: false};
                         var paddingBlocksTest = 5 // padding between W and M block
                         buildFigure(d3.select("#test"), dataWTest, dataMTest, graphicalDataWTest, graphicalDataMTest, paddingBlocksTest, paddingLeft)
-                    </script>
-=======
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>D3 Test</title>
-        <script src="https://d3js.org/d3.v5.js"></script>
-        <script src="data.js">
-        </script>
-    </head>
-    <body>
-            <header>
-                    <h1>Simpson's paradox</h1>
-                  </header>
-                  <svg id="experimental">
-                      <g id=upperleft></g>     <g id=upperright></g>
-                      <g id=lowerleft></g>     <g id=lowerright></g>
-                  </svg>
-                  
-
->>>>>>> ebdbfa212945571fb308dc02a6808db29c40af8f
+                    </script>-->
 
 
 
 
-<<<<<<< HEAD
                   
                   
 
 </dt-article>
-=======
-                  <p>
-                    Some text and this is the first graphics:
-                  </p>
-                  <svg id="fig1" style="background:white">
-                        <g id=groupW></g>
-                        <g id=groupM></g>
-                    </svg>
-                    <script src=fig1.js></script>
-                    <p>Bla</p>
-                    <svg id="fig2">
-                            <g id=groupW></g>
-                            <g id=groupM></g>
-                    </svg>
-                    <script src=fig2.js></script>
-                    <p>Bla</p>
-                    <svg id="fig3" style="background:white">
-                            <g id=groupW></g>
-                            <g id=groupM></g>
-                        </svg>
-                    <script src="fig3.js"></script>
-    </body>
-</html>
->>>>>>> ebdbfa212945571fb308dc02a6808db29c40af8f

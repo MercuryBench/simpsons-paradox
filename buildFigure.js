@@ -27,7 +27,7 @@ var buildGroup = function(groupref, data, graphicalData){
     fig = groupref//.attr('transform', `translate(${graphicalData.textPadding}, ${graphicalData.textPadding})`)
 
     
-    var blockUL = fig.select("#upperleft");
+    /*var blockUL = fig.select("#upperleft");
         blockUL.append("rect")
             .attr("id", "backgroundUL")
             .attr("fill", graphicalData.color[0])
@@ -42,14 +42,15 @@ var buildGroup = function(groupref, data, graphicalData){
             .attr("width", data.Nx21*graphicalData.scale)
             .attr("height", data.Ny2*graphicalData.scale)
         makeBlocks(blockLL, data.Nx21, data.Ny2, graphicalData.scale, graphicalData.padding, graphicalData.color[2])
-        blockLL.attr('transform', 'translate(0,' + (data.Ny1*graphicalData.scale) + ')')
-        if (graphicalData.subdivideHori == true){
+        blockLL.attr('transform', 'translate(0,' + (data.Ny1*graphicalData.scale) + ')')*/
+
+        /*if (graphicalData.subdivideHori == true){
             var blockUR = fig.select("#upperright")
             blockUR.append("rect")
                 .attr("id", "backgroundUR")
                 .attr("fill", graphicalData.color[1])
-                .attr("width", data.Nx12*graphicalData.scale)
-                .attr("height", data.Ny1*graphicalData.scale)
+                .attr("width", data.Nx12*graphicalData.scale-graphicalData.padding)
+                .attr("height", data.Ny1*graphicalData.scale-graphicalData.padding)
             makeBlocks(blockUR, data.Nx12, data.Ny1, graphicalData.scale, graphicalData.padding, graphicalData.color[1])
             blockUR.attr('transform', 'translate(' + (data.Nx11*graphicalData.scale) + ',0)')
 
@@ -57,27 +58,27 @@ var buildGroup = function(groupref, data, graphicalData){
             blockLR.append("rect")
                 .attr("id", "backgroundLR")
                 .attr("fill", graphicalData.color[3])
-                .attr("width", data.Nx22*graphicalData.scale)
-                .attr("height", data.Ny2*graphicalData.scale)
+                .attr("width", data.Nx22*graphicalData.scale-graphicalData.padding)
+                .attr("height", data.Ny2*graphicalData.scale-graphicalData.padding)
             makeBlocks(blockLR, data.Nx22, data.Ny2, graphicalData.scale, graphicalData.padding, graphicalData.color[3])
             blockLR.attr('transform', 'translate(' + (data.Nx21*graphicalData.scale) + ',' + (data.Ny1*graphicalData.scale) + ')')
-        }    
+        }    */
 
     if (graphicalData.subdivideVert == false){
         var blockUL = fig.select("#upperleft");
         blockUL.append("rect")
             .attr("id", "backgroundUL")
             .attr("fill", graphicalData.color[0])
-            .attr("width", data.Nx11*graphicalData.scale)
-            .attr("height", data.Ny1*graphicalData.scale)
+            .attr("width", data.Nx11*graphicalData.scale-graphicalData.padding)
+            .attr("height", data.Ny1*graphicalData.scale-graphicalData.padding)
         makeBlocks(blockUL, data.Nx11, data.Ny1, graphicalData.scale, graphicalData.padding, graphicalData.color[0])
 
         var blockLL = fig.select("#lowerleft")
         blockLL.append("rect")
             .attr("id", "backgroundLL")
             .attr("fill", graphicalData.color[0])
-            .attr("width", data.Nx21*graphicalData.scale)
-            .attr("height", data.Ny2*graphicalData.scale)
+            .attr("width", data.Nx21*graphicalData.scale-graphicalData.padding)
+            .attr("height", data.Ny2*graphicalData.scale-graphicalData.padding)
         makeBlocks(blockLL, data.Nx21, data.Ny2, graphicalData.scale, graphicalData.padding, graphicalData.color[0])
         blockLL.attr('transform', 'translate(0,' + (data.Ny1*graphicalData.scale) + ')')
 
@@ -85,8 +86,8 @@ var buildGroup = function(groupref, data, graphicalData){
         blockUR.append("rect")
             .attr("id", "backgroundUR")
             .attr("fill", graphicalData.color[0])
-            .attr("width", data.Nx12*graphicalData.scale)
-            .attr("height", data.Ny1*graphicalData.scale)
+            .attr("width", data.Nx12*graphicalData.scale-graphicalData.padding)
+            .attr("height", data.Ny1*graphicalData.scale-graphicalData.padding)
         makeBlocks(blockUR, data.Nx12, data.Ny1, graphicalData.scale, graphicalData.padding, graphicalData.color[0])
         blockUR.attr('transform', 'translate(' + (data.Nx11*graphicalData.scale) + ',0)')
 
@@ -94,8 +95,8 @@ var buildGroup = function(groupref, data, graphicalData){
         blockLR.append("rect")
             .attr("id", "backgroundLR")
             .attr("fill", graphicalData.color[0])
-            .attr("width", data.Nx22*graphicalData.scale)
-            .attr("height", data.Ny2*graphicalData.scale)
+            .attr("width", data.Nx22*graphicalData.scale-graphicalData.padding)
+            .attr("height", data.Ny2*graphicalData.scale-graphicalData.padding)
         makeBlocks(blockLR, data.Nx22, data.Ny2, graphicalData.scale, graphicalData.padding, graphicalData.color[0])
         blockLR.attr('transform', 'translate(' + (data.Nx21*graphicalData.scale) + ',' + (data.Ny1*graphicalData.scale) + ')')
     }
@@ -104,16 +105,16 @@ var buildGroup = function(groupref, data, graphicalData){
         blockUL.append("rect")
             .attr("id", "backgroundUL")
             .attr("fill", graphicalData.color[0])
-            .attr("width", data.Nx11*graphicalData.scale)
-            .attr("height", data.Ny1*graphicalData.scale)
+            .attr("width", data.Nx11*graphicalData.scale-graphicalData.padding)
+            .attr("height", data.Ny1*graphicalData.scale-graphicalData.padding)
         makeBlocks(blockUL, data.Nx11, data.Ny1, graphicalData.scale, graphicalData.padding, graphicalData.color[0])
 
         var blockLL = fig.select("#lowerleft")
         blockLL.append("rect")
             .attr("id", "backgroundLL")
             .attr("fill", graphicalData.color[2])
-            .attr("width", data.Nx21*graphicalData.scale)
-            .attr("height", data.Ny2*graphicalData.scale)
+            .attr("width", data.Nx21*graphicalData.scale-graphicalData.padding)
+            .attr("height", data.Ny2*graphicalData.scale-graphicalData.padding)
         makeBlocks(blockLL, data.Nx21, data.Ny2, graphicalData.scale, graphicalData.padding, graphicalData.color[2])
         blockLL.attr('transform', 'translate(0,' + (data.Ny1*graphicalData.scale) + ')')
         if (graphicalData.subdivideHori == true){
@@ -121,8 +122,8 @@ var buildGroup = function(groupref, data, graphicalData){
             blockUR.append("rect")
                 .attr("id", "backgroundUR")
                 .attr("fill", graphicalData.color[1])
-                .attr("width", data.Nx12*graphicalData.scale)
-                .attr("height", data.Ny1*graphicalData.scale)
+                .attr("width", data.Nx12*graphicalData.scale-graphicalData.padding)
+                .attr("height", data.Ny1*graphicalData.scale-graphicalData.padding)
             makeBlocks(blockUR, data.Nx12, data.Ny1, graphicalData.scale, graphicalData.padding, graphicalData.color[1])
             blockUR.attr('transform', 'translate(' + (data.Nx11*graphicalData.scale) + ',0)')
 
@@ -130,8 +131,8 @@ var buildGroup = function(groupref, data, graphicalData){
             blockLR.append("rect")
                 .attr("id", "backgroundLR")
                 .attr("fill", graphicalData.color[3])
-                .attr("width", data.Nx22*graphicalData.scale)
-                .attr("height", data.Ny2*graphicalData.scale)
+                .attr("width", data.Nx22*graphicalData.scale-graphicalData.padding)
+                .attr("height", data.Ny2*graphicalData.scale-graphicalData.padding)
             makeBlocks(blockLR, data.Nx22, data.Ny2, graphicalData.scale, graphicalData.padding, graphicalData.color[3])
             blockLR.attr('transform', 'translate(' + (data.Nx21*graphicalData.scale) + ',' + (data.Ny1*graphicalData.scale) + ')')
         }
@@ -140,8 +141,8 @@ var buildGroup = function(groupref, data, graphicalData){
             blockUR.append("rect")
                 .attr("id", "backgroundUR")
                 .attr("fill", graphicalData.color[0])
-                .attr("width", data.Nx12*graphicalData.scale)
-                .attr("height", data.Ny1*graphicalData.scale)
+                .attr("width", data.Nx12*graphicalData.scale-graphicalData.padding)
+                .attr("height", data.Ny1*graphicalData.scale-graphicalData.padding)
             makeBlocks(blockUR, data.Nx12, data.Ny1, graphicalData.scale, graphicalData.padding, graphicalData.color[0])
             blockUR.attr('transform', 'translate(' + (data.Nx11*graphicalData.scale) + ',0)')
             
@@ -149,8 +150,8 @@ var buildGroup = function(groupref, data, graphicalData){
             blockLR.append("rect")
                 .attr("id", "backgroundLR")
                 .attr("fill", graphicalData.color[2])
-                .attr("width", data.Nx22*graphicalData.scale)
-                .attr("height", data.Ny2*graphicalData.scale)
+                .attr("width", data.Nx22*graphicalData.scale-graphicalData.padding)
+                .attr("height", data.Ny2*graphicalData.scale-graphicalData.padding)
             makeBlocks(blockLR, data.Nx22, data.Ny2, graphicalData.scale, graphicalData.padding, graphicalData.color[2])
             blockLR.attr('transform', 'translate(' + (data.Nx21*graphicalData.scale) + ',' + (data.Ny1*graphicalData.scale) + ')')
 
@@ -216,11 +217,13 @@ var buildGroup = function(groupref, data, graphicalData){
     if (graphicalData.ratiosVert == "left"){
         g1 = fig.append("g")
             .attr("transform", `translate(-50, ${data.Ny1*graphicalData.scale}) rotate(270) `)
+            .attr("class", "ratioBar")
 
         var t1 = Number(100*data.Ny1/(data.Ny1+data.Ny2))
         t1 = t1.toFixed(1) 
         g1.append("rect")
             .attr("width", data.Ny1*graphicalData.scale)
+            .attr("id", "ratioBarLeftTop")
             .attr("height", 25)
             //.attr("x", -data.Ny1*graphicalData.scale)
             //.attr("y", -25)
@@ -239,11 +242,13 @@ var buildGroup = function(groupref, data, graphicalData){
 
         g2 = fig.append("g")
         .attr("transform", `translate(-50, ${(data.Ny1+data.Ny2)*graphicalData.scale}) rotate(270)`)
+        .attr("class", "ratioBar")
         var t2 = Number(100*data.Ny2/(data.Ny1+data.Ny2))
         t2 = t2.toFixed(1) 
         g2.append("rect")
             .attr("width", data.Ny2*graphicalData.scale)
             .attr("height", 25)
+            .attr("id", "ratioBarLeftBottom")
             //.attr("x", -data.Ny1*graphicalData.scale)
             //.attr("y", -25)
             //.attr("width", 25)
@@ -260,12 +265,14 @@ var buildGroup = function(groupref, data, graphicalData){
             //.attr("transform", "rotate(270)")
             .attr("text-anchor", "end")
     }
-    // if we want a visualization of ratios vertically on the left hand side...
+    // if we want a visualization of ratios vertically on the right hand side...
     else if (graphicalData.ratiosVert == "right"){
         g1 = fig.append("g")
             .attr("transform", `translate(${(data.Nx11+data.Nx12)*graphicalData.scale+25}, ${data.Ny1*graphicalData.scale}) rotate(270) `)
+            .attr("class", "ratioBar")
 
         g1.append("rect")
+        .attr("id", "ratioBarRightTop")
             .attr("width", data.Ny1*graphicalData.scale)
             .attr("height", 25)
             .attr("fill", graphicalData.color[0])
@@ -280,10 +287,12 @@ var buildGroup = function(groupref, data, graphicalData){
 
         g2 = fig.append("g")
         .attr("transform", `translate(${(data.Nx11+data.Nx12)*graphicalData.scale+25}, ${(data.Ny1+data.Ny2)*graphicalData.scale}) rotate(270)`)
+        .attr("class", "ratioBar")
 
         var t2 = Number(100*data.Ny2/(data.Ny1+data.Ny2))
         t2 = t2.toFixed(1) 
         g2.append("rect")
+        .attr("id", "ratioBarRightBottom")
             .attr("width", data.Ny2*graphicalData.scale)
             .attr("height", 25)
             .attr("dx", "0.5em")
@@ -308,10 +317,12 @@ var buildGroup = function(groupref, data, graphicalData){
     if (graphicalData.ratiosHori == true){
         g1 = fig.append("g")
             .attr("transform", `translate(0, -50)`)
+            .attr("class", "ratioBar")
 
         var t1 = Number(100*data.Nx11/(data.Nx11+data.Nx12))
         t1 = t1.toFixed(1) 
         g1.append("rect")
+        .attr("id", "ratioBarTopLeft")
             .attr("width", data.Nx11*graphicalData.scale)
             .attr("height", 25)
             //.attr("x", -data.Ny1*graphicalData.scale)
@@ -332,9 +343,11 @@ var buildGroup = function(groupref, data, graphicalData){
 
         g2 = fig.append("g")
         .attr("transform", `translate(${(data.Nx11)*graphicalData.scale}, -50)`)
+        .attr("class", "ratioBar")
         var t2 = Number(100*data.Nx12/(data.Nx11+data.Nx12))
         t2 = t2.toFixed(1) 
         g2.append("rect")
+        .attr("id", "ratioBarTopRight")
             .attr("width", data.Nx12*graphicalData.scale)
             .attr("height", 25)
             //.attr("x", -data.Ny1*graphicalData.scale)
@@ -355,10 +368,12 @@ var buildGroup = function(groupref, data, graphicalData){
         
         g3 = fig.append("g")
             .attr("transform", `translate(0, ${(data.Ny1+data.Ny2)*graphicalData.scale+25})`)
+            .attr("class", "ratioBar")
 
         var t3 = Number(100*data.Nx21/(data.Nx21+data.Nx22))
         t3 = t3.toFixed(1) 
         g3.append("rect")
+        .attr("id", "ratioBarBottomLeft")
             .attr("width", data.Nx21*graphicalData.scale)
             .attr("height", 25)
             //.attr("x", -data.Ny1*graphicalData.scale)
@@ -379,9 +394,11 @@ var buildGroup = function(groupref, data, graphicalData){
 
         g4 = fig.append("g")
         .attr("transform", `translate(${(data.Nx21)*graphicalData.scale}, ${(data.Ny1+data.Ny2)*graphicalData.scale+25})`)
+        .attr("class", "ratioBar")
         var t4 = Number(100*data.Nx22/(data.Nx21+data.Nx22))
         t4 = t4.toFixed(1) 
         g4.append("rect")
+        .attr("id", "ratioBarBottomRight")
             .attr("width", data.Nx22*graphicalData.scale)
             .attr("height", 25)
             //.attr("x", -data.Ny1*graphicalData.scale)
