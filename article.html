@@ -10,7 +10,7 @@
     <script>    
     var dataW = {Nx: 60, Ny: 24, Nx11: 54, Nx12: 6, Nx21: 42, Nx22: 18, Ny1: 8, Ny2: 16};
                         var dataM = {Nx: 60, Ny: 24, Nx11: 51, Nx12: 9, Nx21: 39, Nx22: 21, Ny1: 20, Ny2: 4};
-                        var scale = 8
+                        var scale = 10
                         var paddingLeft = 50
     </script>
 
@@ -28,9 +28,9 @@
     <dt-article>
                   <h1>Simpson's paradox</h1>
                   <p>
-                    We consider a set of 1440<dt-fn>Not, because this is one percent of the <a href=https://en.wikipedia.org/wiki/144,000>redeemed</a> but because it is a natural
+                    For each treatment A and B we consider 1440<dt-fn>Not, because this is one percent of the <a href=https://en.wikipedia.org/wiki/144,000>redeemed</a> but because it is a natural
                         number which is nicely divisible by a lot of other numbers: 1,2,3,4,5,6,8,9,10,12,15,16,18,20,24,30,32,36,40,45,48,60,72,80,90,96,120,144,160,180,240,288,360,480,720,1440.
-                    </dt-fn> women and 1440 men and arrange them nicely in a rectangle 60 by 24, like so:
+                    </dt-fn> patients subjected to it. We arrange them nicely in a rectangle 60 by 24, like so:
                   </p>
                   <svg id="figWhole" style="background: grey", style="stroke: black">
                   </svg>
@@ -44,7 +44,10 @@
                         
                     </script>
                     <p>
-                        Next, we group by faculty: applicants for math are colored yellow, applicants for literature are colored blue.
+                        Next, we group by kidney stone size. We use yellow for patients with <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones and 
+                        blue for <span style="background-color: rgb(0, 163, 255)">large</span> ones. Note that treatment A was used preferentially on <span style="background-color: rgb(0, 163, 255)">large</span>
+                        kidney stones rather than on <span style="background-color: rgb(243, 169, 6)">small</span> ones. Treatment B had a preference converse to that but with an even more pronounced bias
+                         for <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones.
                     </p>
                     <svg id="figSepGender" onclick="clickFigSepGender()" style="background: grey">
                         </svg>
