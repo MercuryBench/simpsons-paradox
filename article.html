@@ -35,8 +35,8 @@
                   <svg id="figWhole" style="background: grey", style="stroke: black">
                   </svg>
                   <script>//
-                        var graphicalDataW = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25};
-                        var graphicalDataM = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25};
+                        var graphicalDataW = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50};
+                        var graphicalDataM = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50};
                         var paddingBlocks = 5 // padding between W and M block
                                                 
                         buildFigure(d3.select("#figWhole"), dataW, dataM, graphicalDataW, graphicalDataM)
@@ -45,7 +45,14 @@
                     </script>
                     <p>
                         Next, we group by kidney stone size. We use yellow for patients with <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones and 
-                        blue for <span style="background-color: rgb(0, 163, 255)">large</span> ones. Note that treatment A was used preferentially on <span style="background-color: rgb(0, 163, 255)">large</span>
+                        blue for <span style="background-color: rgb(0, 163, 255)">large</span> ones.
+                        </p>
+                        <ul>
+                          <li>Treatment A was used preferentially on <span style="background-color: rgb(0, 163, 255)">large</span>
+                            kidney stones</li>
+                        </ul>
+                        <p>
+                        Note that treatment A was used preferentially on <span style="background-color: rgb(0, 163, 255)">large</span>
                         kidney stones rather than on <span style="background-color: rgb(243, 169, 6)">small</span> ones. Treatment B had a preference converse to that but with an even more pronounced bias
                          for <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones.
                     </p>
@@ -53,8 +60,8 @@
                         </svg>
                         <script>//
                               var newColors = [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)];
-                              var graphicalDataW = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25};
-                              var graphicalDataM = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25};
+                              var graphicalDataW = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50};
+                              var graphicalDataM = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50};
 
                                                       
                               buildFigure(d3.select("#figSepGender"), dataW, dataM, graphicalDataW, graphicalDataM, paddingBlocks, paddingBar)
@@ -96,8 +103,8 @@
                     </svg>
                     <script>//
                     var newColors = [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)];
-                          var graphicalDataW = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 80, 75), d3.hcl(250, 80, 60), d3.hcl(250, 80, 60)], subdivideVert: true, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25};
-                          var graphicalDataM = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 80, 75), d3.hcl(250, 80, 60), d3.hcl(250, 80, 60)], subdivideVert: true, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25};
+                          var graphicalDataW = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 80, 75), d3.hcl(250, 80, 60), d3.hcl(250, 80, 60)], subdivideVert: true, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50};
+                          var graphicalDataM = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 80, 75), d3.hcl(250, 80, 60), d3.hcl(250, 80, 60)], subdivideVert: true, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50};
                           var paddingBlocks = 5 // padding between W and M block
                                                   
                           buildFigure(d3.select("#figAllCategories"), dataW, dataM, graphicalDataW, graphicalDataM, paddingBlocks, paddingBar)

@@ -67,6 +67,7 @@ var buildGroup = function(groupref, data, graphicalData){
             .attr("id", "labelNx")
             .attr("x", (data.Nx11+data.Nx12)/2*graphicalData.scale)
             .attr("y", 0)
+            .attr("dy", "-0.5em")
             .text(data.Nx11+data.Nx12)
             .attr("text-anchor", "middle")
             .attr("visibility", graphicalData.subdivideHori?"hidden":"visible")
@@ -78,6 +79,7 @@ var buildGroup = function(groupref, data, graphicalData){
         fig.append("text")
             .attr("id", "labelNy")
             .attr("x", 0)
+            .attr("dx", "-0.5em")
             .attr("y", (data.Ny1+data.Ny2)/2*graphicalData.scale)
             .text(data.Ny1+data.Ny2)
             .attr("text-anchor", "end")
@@ -87,6 +89,7 @@ var buildGroup = function(groupref, data, graphicalData){
             .attr("id", "labelNy1")
             .attr("class", "labelNy_sub")
             .attr("x", 0)
+            .attr("dx", "-0.5em")
             .attr("y", data.Ny1/2*graphicalData.scale)
             .text(data.Ny1)
             .attr("text-anchor", "end")
@@ -96,6 +99,7 @@ var buildGroup = function(groupref, data, graphicalData){
             .attr("id", "labelNy2")
             .attr("class", "labelNy_sub")
             .attr("x", 0)
+            .attr("dx", "-0.5em")
             .attr("y", (data.Ny1 + data.Ny2/2)*graphicalData.scale)
             .text(data.Ny2)
             .attr("text-anchor", "end")
@@ -106,6 +110,7 @@ var buildGroup = function(groupref, data, graphicalData){
             fig.append("text")
                 .attr("id", "labelNy")
                 .attr("x", (data.Nx21 + data.Nx22)*graphicalData.scale)
+                .attr("dx", "0.5em")
                 .attr("y", (data.Ny1+data.Ny2)/2*graphicalData.scale)
                 .text(data.Ny1+data.Ny2)
                 .attr("visibility", graphicalData.subdivideVert?"hidden":"visible")
@@ -114,6 +119,7 @@ var buildGroup = function(groupref, data, graphicalData){
                 .attr("id", "labelNy1")
                 .attr("class", "labelNy_sub")
                 .attr("x", (data.Nx21 + data.Nx22)*graphicalData.scale)
+                .attr("dx", "0.5em")
                 .attr("y", data.Ny1/2*graphicalData.scale)
                 .text(data.Ny1)
                 .attr("visibility", graphicalData.subdivideVert?"visible":"hidden")
@@ -123,6 +129,7 @@ var buildGroup = function(groupref, data, graphicalData){
                 .attr("id", "labelNy2")
                 .attr("class", "labelNy_sub")
                 .attr("x", (data.Nx21 + data.Nx22)*graphicalData.scale)
+                .attr("dx", "0.5em")
                 .attr("y", (data.Ny1 + data.Ny2/2)*graphicalData.scale)
                 .text(data.Ny2)
                 .attr("visibility", graphicalData.subdivideVert?"visible":"hidden")
@@ -134,6 +141,7 @@ var buildGroup = function(groupref, data, graphicalData){
             .attr("class", "labelNx_sub")
             .attr("x", data.Nx11/2*graphicalData.scale)
             .attr("y", 0)
+            .attr("dy", "-0.5em")
             .text(data.Nx11)
             .attr("text-anchor", "middle")
             .attr("visibility", graphicalData.subdivideHori?"visible":"hidden")
@@ -142,6 +150,7 @@ var buildGroup = function(groupref, data, graphicalData){
             .attr("class", "labelNx_sub")
             .attr("x", (data.Nx11 + data.Nx12/2)*graphicalData.scale)
             .attr("y", 0)
+            .attr("dy", "-0.5em")
             .text(data.Nx12)
             .attr("text-anchor", "middle")
             .attr("visibility", graphicalData.subdivideHori?"visible":"hidden")
@@ -149,7 +158,8 @@ var buildGroup = function(groupref, data, graphicalData){
             .attr("id", "labelNx21")
             .attr("class", "labelNx_sub")
             .attr("x", data.Nx21/2*graphicalData.scale)
-            .attr("y", data.Ny*graphicalData.scale+15) // 15 is a bad hack to shift text below a bit
+            .attr("y", data.Ny*graphicalData.scale) // 15 is a bad hack to shift text below a bit
+            .attr("dy", "1.5em")
             .text(data.Nx21)
             .attr("text-anchor", "middle")
             .attr("visibility", graphicalData.subdivideHori?"visible":"hidden")
@@ -157,7 +167,8 @@ var buildGroup = function(groupref, data, graphicalData){
             .attr("id", "labelNx22")
             .attr("class", "labelNx_sub")
             .attr("x", (data.Nx21 + data.Nx22/2)*graphicalData.scale)
-            .attr("y", data.Ny*graphicalData.scale+15) // 15 is a bad hack to shift text below a bit
+            .attr("y", data.Ny*graphicalData.scale) // 15 is a bad hack to shift text below a bit
+            .attr("dy", "1.5em")
             .text(data.Nx22)
             .attr("text-anchor", "middle")
             .attr("visibility", graphicalData.subdivideHori?"visible":"hidden")
@@ -345,17 +356,33 @@ var buildFigure = function(reffig, dataLeft, dataRight, graphicalDataLeft, graph
         .attr("id", "groupLeft")
     reffig.append("g")
         .attr("id", "groupRight")
+    
+    reffig.append("text")
+        .attr("id", "titleLeft")
+        .text(graphicalDataLeft.titleLeft)
+        .attr("dy", "2em")
+        .style("font-size", "20px")
+    reffig.append("text")
+    .attr("id", "titleRight")
+        .text(graphicalDataLeft.titleRight)
+        .attr("dy", "2em")
+        .style("font-size", "20px")
 
     var groupLeft = buildGroup(reffig.select("#groupLeft"), dataLeft, graphicalDataLeft)
     var groupRight = buildGroup(reffig.select("#groupRight"), dataRight, graphicalDataRight)
     var transformLeftX = parseFloat(graphicalDataLeft.textPadding+graphicalDataLeft.paddingBar)
-    var transformLeftY = parseFloat(graphicalDataLeft.textPadding+graphicalDataLeft.paddingBar)
+    var transformLeftY = parseFloat(graphicalDataLeft.textPadding+graphicalDataLeft.paddingBar+graphicalDataLeft.titlePadding)
     var transformRightX = parseFloat(groupLeft.attr("width"))+parseFloat(graphicalDataRight.textPadding)+graphicalDataRight.paddingBar
-    var transformRightY = parseFloat(graphicalDataLeft.textPadding+ graphicalDataRight.paddingBar)
+    var transformRightY = parseFloat(graphicalDataLeft.textPadding+ graphicalDataRight.paddingBar+graphicalDataRight.titlePadding)
     groupLeft.attr("transform", `translate(${transformLeftX}, ${transformLeftY})`)
     groupRight.attr("transform", `translate(${transformRightX}, ${transformRightY})`)
-    var w = parseFloat(groupLeft.attr("width"))+parseFloat(groupRight.attr("width"))+graphicalDataLeft.paddingBlocks + 2.5*graphicalDataLeft.paddingBar; // REVIEW!!!
+    var w = parseFloat(groupLeft.attr("width"))+parseFloat(groupRight.attr("width"))+graphicalDataLeft.paddingBlocks + 3*graphicalDataLeft.paddingBar; // REVIEW!!!
     var h = Math.max(parseFloat(groupLeft.attr("height")), parseFloat(groupRight.attr("height"))) + 2.5*graphicalDataLeft.paddingBar; // REVIEW!!!
+
+    reffig.select("#titleLeft")
+        .attr("transform", `translate(${groupLeft.attr("width")/2},0)`)
+    reffig.select("#titleRight")
+        .attr("transform", `translate(${parseFloat(groupLeft.attr("width")) + parseFloat(groupRight.attr("width"))/2},0)`)
 
     var fig = reffig
         .attr("width", w)
