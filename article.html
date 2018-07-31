@@ -40,6 +40,29 @@
         
                   <h1>Simpson's paradox</h1>
                   <p>
+                    We start by looking at some patients like a hospital manager would: Featureless objects lacking personality and history. We even abstract away gender, age and their ice cream preferences.
+                  </p>
+                  <p>Keep in mind: Every white square is exactly one patient.</p>
+                  <svg id="patients" width=600 height=300 style="background: grey">
+                  </svg>
+                  <script>
+                    var N = 100
+                    var svg = d3.select("#patients")
+                    lst = []
+                    for (var i=0; i<N; i++) {
+                      lst.push([Math.random()*(600-2*scale) + scale, Math.random()*(300-2*scale) + scale]);
+
+                    }
+
+                    svg.selectAll("rect").data(lst).enter()
+                      .append("rect")
+                      .attr("x", function(d){return d[0];})
+                      .attr("y", function(d){return d[1];})
+                      .attr("width", scale).attr("height", scale)
+                      .attr("fill", "white")
+                      .attr("stroke", "black")
+                    </script>
+                  <p>
                     For each treatment A and B we consider 1440<dt-fn>Not, because this is one percent of the <a href=https://en.wikipedia.org/wiki/144,000>redeemed</a> but because it is a natural
                         number which is nicely divisible by a lot of other numbers: 1,2,3,4,5,6,8,9,10,12,15,16,18,20,24,30,32,36,40,45,48,60,72,80,90,96,120,144,160,180,240,288,360,480,720,1440.
                     </dt-fn> patients subjected to it. We arrange them nicely in a rectangle 60 by 24, like so:
@@ -47,34 +70,41 @@
                   <svg id="figWhole" style="background: grey", style="stroke: black">
                   </svg>
                   <script>//
-                      var labelDataA = {labelUpper: ["small stones", "hidden"], labelLower: ["large stones", "hidden"], labelUpperLeft: ["small stones", "hidden"], labelUpperRight: ["small stones", "hidden"], labelLowerLeft: ["large stones", "hidden"], labelLowerRight: ["large stones", "hidden"]};
+                      var labelAll = dataA.Nx + " * " + dataA.Ny + " = " + dataA.Nx*dataA.Ny + " patients";
+                      var labelDataA = {labelUpper: ["patients", "hidden"], labelLower: ["patients", "hidden"], labelUpperLeft: [labelAll, "hidden"], labelUpperRight: [labelAll, "hidden"], labelLowerLeft: [labelAll, "hidden"], labelLowerRight: [labelAll, "hidden"]};
+                      var labelDataB = {labelUpper: ["patients", "hidden"], labelLower: ["patients", "hidden"], labelUpperLeft: [labelAll, "hidden"], labelUpperRight: [labelAll, "hidden"], labelLowerLeft: [labelAll, "hidden"], labelLowerRight: [labelAll, "hidden"]};
+                        var dataB = {Nx: 60, Ny: 24, Nx11: 51, Nx12: 9, Nx21: 39, Nx22: 21, Ny1: 20, Ny2: 4};
                         var graphicalDataA = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataA};
-                        var graphicalDataB = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataA};
+                        var graphicalDataB = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataB};
                         var paddingBlocks = 5 // padding between W and M block
                                                 
-                        buildFigure(d3.select("#figWhole"), dataA, dataB, graphicalDataA, graphicalDataB)
+                        buildFigure(d3.select("#figWhole"), dataA, dataA, graphicalDataA, graphicalDataB)
                         
                         
                     </script>
                     <p>
-                        Next, we group by kidney stone size. We use yellow for patients with <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones and 
+                        <em>Click anywhere on the figure to group by kidney stone size.</em> We use yellow for patients with <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones and 
                         blue for <span style="background-color: rgb(0, 163, 255)">large</span> ones.
                         </p>
                         <ul>
-                          <li>Treatment A was used preferentially on <span style="background-color: rgb(0, 163, 255)">large</span>
-                            kidney stones</li>
+                          <li>Among patients treated with treatment A, there were more patients with <span style="background-color: rgb(0, 163, 255)">large</span> 
+                            kidney stones than those with <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones </li>
+                          <li>Among patients treated with treatment B, there were more patients with <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones 
+                            than those with <span style="background-color: rgb(0, 163, 255)">small</span> kidney stones</span></li>
                         </ul>
                         <p>
-                        Note that treatment A was used preferentially on <span style="background-color: rgb(0, 163, 255)">large</span>
-                        kidney stones rather than on <span style="background-color: rgb(243, 169, 6)">small</span> ones. Treatment B had a preference converse to that but with an even more pronounced bias
-                         for <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones.
+                        
                     </p>
                     <svg id="figSepGender" onclick="clickFigSepGender()" style="background: grey">
                         </svg>
                         <script>//
                               var newColors = [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)];
-                              var labelDataA = {labelUpper: ["small stones", "hidden"], labelLower: ["large stones", "hidden"], labelUpperLeft: [(dataA.Nx11+dataA.Nx12)*dataA.Ny1 + " patients with small kidney stones were treated with treatment A", "hidden"], labelUpperRight: [(dataA.Nx11+dataA.Nx12)*dataA.Ny1 + " patients with small kidney stones were treated with treatment A", "hidden"], labelLowerLeft: [(dataA.Nx11+dataA.Nx12)*dataA.Ny2 + " patients with large kidney stones were treated with treatment A", "hidden"], labelLowerRight: [(dataA.Nx11+dataA.Nx12)*dataA.Ny2 + " patients with large kidney stones were treated with treatment A", "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment A with small kidney stones", labelRatioBarSideBottom: "Ratio of patients under treatment A with large kidney stones"};
-                              var labelDataB = {labelUpper: ["small stones", "hidden"], labelLower: ["large stones", "hidden"], labelUpperLeft: [(dataB.Nx11+dataB.Nx12)*dataB.Ny1 + " patients with small kidney stones were treated with treatment B", "hidden"], labelUpperRight: [(dataB.Nx11+dataB.Nx12)*dataB.Ny1 + " patients with small kidney stones were treated with treatment B", "hidden"], labelLowerLeft: [(dataB.Nx11+dataB.Nx12)*dataB.Ny2 + " patients with large kidney stones were treated with treatment B", "hidden"], labelLowerRight: [(dataB.Nx11+dataB.Nx12)*dataB.Ny2 + " patients with large kidney stones were treated with treatment B", "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment B with small kidney stones", labelRatioBarSideBottom: "Ratio of patients under treatment B with large kidney stones"};
+                              var labelAUpper = dataA.Nx + " * " + dataA.Ny1 + " = " + dataA.Nx*dataA.Ny1 + " patients with small kidney stones were treated with treatment A";
+                              var labelBUpper = dataB.Nx + " * " + dataB.Ny1 + " = " + dataB.Nx*dataB.Ny1 + " patients with small kidney stones were treated with treatment B";
+                              var labelALower = dataA.Nx + " * " + dataA.Ny2 + " = " + dataA.Nx*dataA.Ny2 + " patients with large kidney stones were treated with treatment A";
+                              var labelBLower = dataB.Nx + " * " + dataB.Ny2 + " = " + dataB.Nx*dataB.Ny2 + " patients with large kidney stones were treated with treatment B";
+                              var labelDataA = {labelUpper: ["small stones", "hidden"], labelLower: ["large stones", "hidden"], labelUpperLeft: [labelAUpper, "hidden"], labelUpperRight: [labelAUpper, "hidden"], labelLowerLeft: [labelALower, "hidden"], labelLowerRight: [labelALower, "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment A with small kidney stones", labelRatioBarSideBottom: "Ratio of patients under treatment A with large kidney stones"};
+                              var labelDataB = {labelUpper: ["small stones", "hidden"], labelLower: ["large stones", "hidden"], labelUpperLeft: [labelBUpper, "hidden"], labelUpperRight: [labelBUpper, "hidden"], labelLowerLeft: [labelBLower, "hidden"], labelLowerRight: [labelBLower, "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment B with small kidney stones", labelRatioBarSideBottom: "Ratio of patients under treatment B with large kidney stones"};
                               var graphicalDataA = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataA};
                               var graphicalDataB = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataB};
 
@@ -112,26 +142,119 @@
 
 
                               }
-
+                          
                           </script>
-                    <p>Now we look at the success rates of each of those four subgroups.</p>
-                   
+                    <p>Now we need to look at the success rates of the treatments in each of those four subgroups. <em>Click anywhere on the figure to do this.</em> </p>
+                    <p>We can see the following things (hover over items to see effects):</p>
+                    <ul>
+                      <li onmouseover="mouseover1()" onmouseleave="mouseleave1()">Treatment A has a better success rate for <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones. </li>
+                      <li onmouseover="mouseover2()" onmouseleave="mouseleave2()">Treatment A has a better success rate for <span style="background-color: rgb(0, 163, 255)">large</span> kidney stones. </li>
+                      <li onmouseover="mouseover3()" onmouseleave="mouseleave3()">Treatment B has a better success rate overall: The number of patients successfully treated by treatment A is lower than the
+                        corresponding number for treatment B.
+                      </li>
+                    </ul>
                     
+                    <p> This is what constitutes Simpson's paradox: Although the success rates in each subpopulation are better for treatment A, the combined success rate is better for treatment B.</p>
+                   
+                    <script>
+                      var mouseover1 = function()
+                      {
+                          var svg = d3.select("#figAllCategories")
+                          svg.selectAll("#upperleft").attr("opacity", 0.35)                          
+                          svg.selectAll("#upperright").attr("opacity", 0.35)
+                          svg.selectAll("#lowerleft").attr("opacity", 0.35)
+                          svg.selectAll("#lowerright").attr("opacity", 0.35)
+                          svg.selectAll(".ratioBarBottom").attr("opacity", 0.35)
+                          svg.selectAll(".ratioBarSide").attr("opacity", 0.35)
+                      }
+                      var mouseleave1 = function()
+                      {
+                          var svg = d3.select("#figAllCategories")
+                          svg.selectAll("#upperleft").attr("opacity", 1)                          
+                          svg.selectAll("#upperright").attr("opacity", 1)
+                          svg.selectAll("#lowerleft").attr("opacity", 1)
+                          svg.selectAll("#lowerright").attr("opacity", 1)
+                          svg.selectAll(".ratioBarBottom").attr("opacity", 1)
+                          svg.selectAll(".ratioBarSide").attr("opacity", 1)
+                      }
+                      var mouseover2 = function()
+                      {
+                          var svg = d3.select("#figAllCategories")
+                          svg.selectAll("#upperleft").attr("opacity", 0.35)                          
+                          svg.selectAll("#upperright").attr("opacity", 0.35)
+                          svg.selectAll("#lowerleft").attr("opacity", 0.35)
+                          svg.selectAll("#lowerright").attr("opacity", 0.35)
+                          svg.selectAll(".ratioBarTop").attr("opacity", 0.35)
+                          svg.selectAll(".ratioBarSide").attr("opacity", 0.35)
+                      }
+                      var mouseleave2 = function()
+                      {
+                          var svg = d3.select("#figAllCategories")
+                          svg.selectAll("#upperleft").attr("opacity", 1)                          
+                          svg.selectAll("#upperright").attr("opacity", 1)
+                          svg.selectAll("#lowerleft").attr("opacity", 1)
+                          svg.selectAll("#lowerright").attr("opacity", 1)
+                          svg.selectAll(".ratioBarTop").attr("opacity", 1)
+                          svg.selectAll(".ratioBarSide").attr("opacity", 1)
+                      }
+                      var mouseover3 = function()
+                      {
+                          var svg = d3.select("#figAllCategories")
+                          //svg.selectAll("#upperleft").attr("opacity", 0.35)                          
+                          svg.selectAll("#upperright").attr("opacity", 0.35)
+                          //svg.selectAll("#lowerleft").attr("opacity", 0.35)
+                          svg.selectAll("#lowerright").attr("opacity", 0.35)
+                          svg.selectAll(".ratioBarTop").attr("opacity", 0.35)
+                          svg.selectAll(".ratioBarBottom").attr("opacity", 0.35)
+                          svg.selectAll(".ratioBarSide").attr("opacity", 0.35)
+                      }
+                      var mouseleave3 = function()
+                      {
+                          var svg = d3.select("#figAllCategories")
+                          //svg.selectAll("#upperleft").attr("opacity", 1)                          
+                          svg.selectAll("#upperright").attr("opacity", 1)
+                          //svg.selectAll("#lowerleft").attr("opacity", 1)
+                          svg.selectAll("#lowerright").attr("opacity", 1)
+                          svg.selectAll(".ratioBarTop").attr("opacity", 1)
+                          svg.selectAll(".ratioBarBottom").attr("opacity", 1)
+                          svg.selectAll(".ratioBarSide").attr("opacity", 1)
+                      }
+                      </script>
                     
                     <svg onclick="clickFigAllCategories()" id="figAllCategories" style="background: grey">
+                    
                     </svg>
                     <script>//
                     var newColors = [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)];
                     //var labelDataA = {labelUpper: ["small stones", "visible"], labelLower: ["large stones", "visible"], labelUpperLeft: ["small stones (successfully treated)", "hidden"], labelUpperRight: ["small stones \n(treated without success)", "hidden"], labelLowerLeft: ["large stones (successfully treated)", "hidden"], labelLowerRight: ["large stones (treated without success)", "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment A with small kidney stones", labelRatioSideBottom: "Ratio of patients under treatment A with large kidney stones", labelRatioBarRightTop: "Ratio of patients under treatment B with small kidney stones", labelRatioBarRightBottom: "Ratio of patients under treatment B with large kidney stones"};
                           
-                          var labelDataA = {labelUpper: ["small stones", "visible"], labelLower: ["large stones", "visible"], labelUpperLeft: [(dataA.Nx11)*dataA.Ny1 + " patients with small kidney stones were successfully treated with treatment A", "hidden"], labelUpperRight: [(dataA.Nx12)*dataA.Ny1 + " patients with small kidney stones were unsuccessfully treated with treatment A", "hidden"], labelLowerLeft: [(dataA.Nx21)*dataA.Ny2 + " patients with large kidney stones were successfully treated with treatment A", "hidden"], labelLowerRight: [(dataA.Nx22)*dataA.Ny2 + " patients with large kidney stones were unsuccessfully treated with treatment A", "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment A with small kidney stones", labelRatioBarSideBottom: "Ratio of patients under treatment A with large kidney stones"};
-                          var labelDataB = {labelUpper: ["small stones", "visible"], labelLower: ["large stones", "visible"], labelUpperLeft: [(dataB.Nx11)*dataB.Ny1 + " patients with small kidney stones were successfully treated with treatment B", "hidden"], labelUpperRight: [(dataB.Nx12)*dataB.Ny1 + " patients with small kidney stones were unsuccessfully treated with treatment B", "hidden"], labelLowerLeft: [(dataB.Nx21)*dataB.Ny2 + " patients with large kidney stones were successfully treated with treatment B", "hidden"], labelLowerRight: [(dataB.Nx22)*dataB.Ny2 + " patients with large kidney stones were unsuccessfully treated with treatment B", "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment B with small kidney stones", labelRatioBarSideBottom: "Ratio of patients under treatment B with large kidney stones"};
+
+                          var labelAUpperLeft = dataA.Nx11 + "*" + dataA.Ny1 + " = " + (dataA.Nx11)*dataA.Ny1 + " patients with small kidney stones were successfully treated with treatment A";
+                          var labelAUpperRight = dataA.Nx12 + "*" + dataA.Ny1 + " = " + (dataA.Nx12)*dataA.Ny1 + " patients with small kidney stones were unsuccessfully treated with treatment A";
+                          var labelALowerLeft = dataA.Nx21 + "*" + dataA.Ny2 + " = " + (dataA.Nx21)*dataA.Ny2 + " patients with small kidney stones were successfully treated with treatment A";
+                          var labelALowerRight = dataA.Nx22 + "*" + dataA.Ny2 + " = " + (dataA.Nx22)*dataA.Ny2 + " patients with small kidney stones were unsuccessfully treated with treatment A";
+                          var labelBUpperLeft = dataB.Nx11 + "*" + dataB.Ny1 + " = " + (dataB.Nx11)*dataB.Ny1 + " patients with small kidney stones were successfully treated with treatment B";
+                          var labelBUpperRight = dataB.Nx12 + "*" + dataB.Ny1 + " = " + (dataB.Nx12)*dataB.Ny1 + " patients with small kidney stones were unsuccessfully treated with treatment B";
+                          var labelBLowerLeft = dataB.Nx21 + "*" + dataB.Ny2 + " = " + (dataB.Nx21)*dataB.Ny2 + " patients with small kidney stones were successfully treated with treatment B";
+                          var labelBLowerRight = dataB.Nx22 + "*" + dataB.Ny2 + " = " + (dataB.Nx22)*dataB.Ny2 + " patients with small kidney stones were unsuccessfully treated with treatment B";
+                          var labelDataA = {labelUpper: ["small stones", "visible"], labelLower: ["large stones", "visible"], labelUpperLeft: [labelAUpperLeft, "hidden"], labelUpperRight: [labelAUpperRight, "hidden"], labelLowerLeft: [labelALowerLeft, "hidden"], labelLowerRight: [labelALowerRight, "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment A with small kidney stones", labelRatioBarSideBottom: "Ratio of patients under treatment A with large kidney stones"};
+                          var labelDataB = {labelUpper: ["small stones", "visible"], labelLower: ["large stones", "visible"], labelUpperLeft: [labelBUpperLeft, "hidden"], labelUpperRight: [labelBUpperRight, "hidden"], labelLowerLeft: [labelBLowerLeft, "hidden"], labelLowerRight: [labelBLowerRight, "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment B with small kidney stones", labelRatioBarSideBottom: "Ratio of patients under treatment B with large kidney stones"};
                               
                           var graphicalDataA = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 80, 75), d3.hcl(250, 80, 60), d3.hcl(250, 80, 60)], subdivideVert: true, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataA};
                           var graphicalDataB = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 80, 75), d3.hcl(250, 80, 60), d3.hcl(250, 80, 60)], subdivideVert: true, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataB};
                           var paddingBlocks = 5 // padding between W and M block
                                                   
                           buildFigure(d3.select("#figAllCategories"), dataA, dataB, graphicalDataA, graphicalDataB, paddingBlocks, paddingBar)
+
+                          // block for mouseover action
+                          var svg = d3.select("#figAllCategories")
+                          var posUpperRatioBar = svg.select("#groupLeft").select("#leftestRatioBarTop").node().getBoundingClientRect()
+
+                          svg.select("#groupLeft").append("circle")
+                            .attr("cx", posUpperRatioBar.x)
+                            .attr("cy", posUpperRatioBar.y)
+                            .attr("r", 40)
+                            .attr("fill", "black")
                           
                           var groupLeft = d3.select("#figAllCategories").select("#groupLeft")
                           var groupRight = d3.select("#figAllCategories").select("#groupRight");
@@ -171,15 +294,8 @@
 
                               }
                       </script>
-                      <p>Note:
-                      </p>
-                        <ol>
-                          <li>The left "success bars" are all better than the right ones.</li>
-                          <li>The right figure has a higher number of "successful squares"</li>
-                        </ol>
-                      <p>This constitutes Simpson's paradox.</p>
 
-
+                      
 
 
                   
