@@ -13,6 +13,11 @@ var makeBlocks = function(blockSelection, Nx, Ny, sc, pad, col)
                 }
             }
         }
+var makeBlocksNoRect = function(blockSelection, Nx, Ny, sc, pad, col)
+    {
+        var rectGroup = blockSelection.append("g").attr("id", "rectGroup");
+        
+    }
 var buildGroup = function(groupref, data, graphicalData, tooltip_ref){
     
     
@@ -593,3 +598,4 @@ var buildFigure = function(reffig, dataLeft, dataRight, graphicalDataLeft, graph
         //.attr(`viewBox(-100 -100 ${w} ${h}`)
     
 }
+

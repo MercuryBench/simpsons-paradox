@@ -1,0 +1,603 @@
+<meta charset="utf-8">
+<script src="https://d3js.org/d3.v5.js"></script>
+<script src="buildFigure.js"></script>
+
+<style>.column {
+    float: left;
+    width: 50%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+
+text {
+    text-anchor: "center";
+}
+}</style>
+
+
+<div class="row">
+    <div class="column">
+        <table>
+        <tr>
+                <td>Fraction of [small stones] in [Treatment A]</td>
+                <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeRatioA1"></td>
+        </tr>
+        <tr>
+                <td>Success rate of [small stones] in [Treatment A]</td>
+                <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccA1"></td>
+        </tr>
+        <tr>
+                <td>Success rate of [large stones] in [Treatment A]</td>
+                <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccA2"></td>
+        </tr>
+    </table>
+    </div>
+    <div class="column">
+            <table>
+                    <tr>
+                            <td>Fraction of [small stones] in [Treatment B]</td>
+                            <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeRatioB1"></td>
+                    </tr>
+                    <tr>
+                            <td>Success rate of [small stones] in [Treatment B]</td>
+                            <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccB1"></td>
+                    </tr>
+                    <tr>
+                            <td>Success rate of [large stones] in [Treatment B]</td>
+                            <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccB2"></td>
+                    </tr>
+                </table>
+    </div>
+  </div> 
+  
+
+<svg id="figPlayground" onclick="" style="background: grey" viewBox="-70 -70 1200 350">
+  <g id="groupLeft">      
+  <rect id="rect1" width = 540 height=80 fill="white" stroke="black" ></rect>
+  <text id="text1" text-anchor="middle" dy="0.5em"></text>
+  <rect id="rect2" x=540 width=60 height=80 fill="white" stroke="black"></rect>
+  <text id="text2" text-anchor="middle"></text>
+  <rect id="rect3" y=80 width=420 height=160 fill="white" stroke="black"></rect>
+  <text id="text3" text-anchor="middle"></text>
+  <rect id="rect4" y=80 x= 420 width=180 height=160 fill="white" stroke="black"></rect>
+  <text id="text4" text-anchor="middle"></text>
+  <g id="ratioBarTop">
+      <g id="left"></g>
+      <g id="right"></g>
+  </g>
+  <g id="ratioBarBottom">
+        <g id="left"></g>
+        <g id="right"></g>
+    </g>
+  <g id="ratioBarSide">
+        <g id="top"></g>
+        <g id="bottom"></g>
+    </g>
+</g>
+<g id="groupRight">      
+        <rect id="rect1" width = 540 height=80 fill="white" stroke="black" ></rect>
+        <text id="text1" text-anchor="middle"></text>
+        <rect id="rect2" x=540 width=60 height=80 fill="white" stroke="black"></rect>
+        <text id="text2" text-anchor="middle"></text>
+        <rect id="rect3" y=80 width=420 height=160 fill="white" stroke="black"></rect>
+        <text id="text3" text-anchor="middle"></text>
+        <rect id="rect4" y=80 x= 420 width=180 height=160 fill="white" stroke="black"></rect>
+        <text id="text4" text-anchor="middle"></text>
+        <g id="ratioBarTop">
+                <g id="left"></g>
+                <g id="right"></g>
+            </g>
+        <g id="ratioBarBottom">
+                <g id="left"></g>
+                <g id="right"></g>
+            </g>
+        <g id="ratioBarSide">
+                <g id="top"></g>
+                <g id="bottom"></g>
+            </g>
+      </g>
+</svg>
+<script>// data used initially 
+        var dataPGA = {Nx: 1, Ny: 1, Nx11: 54/60, Nx12: 6/60, Nx21: 42/60, Nx22: 18/60, Ny1: 8/24, Ny2: 16/24};
+        var dataPGB = {Nx: 1, Ny: 1, Nx11: 51/60, Nx12: 9/60, Nx21: 39/60, Nx22: 21/60, Ny1: 20/24, Ny2: 4/24};
+        // graphical parameters
+      var scale = 350
+      var paddingGroups = 50;
+      var paddingBars = 25;
+      var paddingFig = 15
+    var barWidth = 25
+    
+    var svg = d3.select("#figPlayground");
+    // translate right group away from left group
+    svg.select("#groupRight").attr("transform",  `translate(${dataPGA.Nx*scale+paddingGroups}, 0)`)
+    svg.attr("viewBox", `-${paddingBars+barWidth+paddingFig} -${paddingBars+barWidth+paddingFig} ${(dataPGA.Nx+dataPGB.Nx)*scale + paddingGroups + 2*paddingBars + paddingBars+barWidth +2*paddingFig} ${(dataPGA.Ny)*scale + paddingGroups + 2*paddingBars + paddingBars+barWidth} `)
+
+    // for both left and right group do:
+    for (var id of [["#groupLeft", dataPGA], ["#groupRight", dataPGB]]) {
+        var g = svg.select(id[0]);
+
+
+        // Build "ratio bar on top"
+        var bar = g.select("#ratioBarTop")
+        var subbar = bar.select("#left")
+        subbar.append("rect")
+            .attr("width", id[1].Nx11*scale)
+            .attr("height", barWidth)
+            .attr("fill", "white")
+            .attr("stroke", "black")
+        subbar.append("text")
+            .attr("text-anchor", "end")
+            .attr("dx", "-0.5em")
+            .attr("x", id[1].Nx11*scale)
+            .attr("y", barWidth/2)
+            .attr("dy", "0.25em")
+            .text(Number(id[1].Nx11/id[1].Nx).toFixed(2))
+        
+        var subbar = bar.select("#right")
+        subbar.append("rect")
+            .attr("x", id[1].Nx11*scale)
+            .attr("width", id[1].Nx12*scale)
+            .attr("height", barWidth)
+            .attr("fill", "white")
+            .attr("stroke", "black")
+        subbar.append("text")
+            .attr("x", id[1].Nx11*scale)
+            .attr("dx", "0.5em")
+            .attr("y", barWidth/2)
+            .attr("dy", "0.25em")
+            .text(Number(id[1].Nx12/id[1].Nx).toFixed(2))
+        
+        bar.attr("transform", `translate(0, -${paddingBars+barWidth})`)
+
+        // Build "ratio bar at the bottom"
+        var bar = g.select("#ratioBarBottom")
+        var subbar = bar.select("#left")
+        subbar.append("rect")
+            .attr("width", id[1].Nx21*scale)
+            .attr("height", barWidth)
+            .attr("fill", "white")
+            .attr("stroke", "black")
+        subbar.append("text")
+            .attr("text-anchor", "end")
+            .attr("dx", "-0.5em")
+            .attr("x", id[1].Nx21*scale)
+            .attr("y", barWidth/2)
+            .attr("dy", "0.25em")
+            .text(Number(id[1].Nx21/id[1].Nx).toFixed(2))
+        
+        var subbar = bar.select("#right")
+        subbar.append("rect")
+            .attr("x", id[1].Nx21*scale)
+            .attr("width", id[1].Nx22*scale)
+            .attr("height", barWidth)
+            .attr("fill", "white")
+            .attr("stroke", "black")
+        subbar.append("text")
+            .attr("x", id[1].Nx21*scale)
+            .attr("dx", "0.5em")
+            .attr("y", barWidth/2)
+            .attr("dy", "0.25em")
+            .text(Number(id[1].Nx22/id[1].Nx).toFixed(2))
+        
+        bar.attr("transform", `translate(0, ${id[1].Ny*scale + paddingBars})`)
+
+        // build "ratio bar at the side"
+        var bar = g.select("#ratioBarSide")
+        var subbar = bar.select("#top")
+        subbar.append("rect")
+            .attr("x", id[1].Ny2*scale)
+            .attr("width", id[1].Ny1*scale)
+            .attr("height", barWidth)
+            .attr("fill", "white")
+            .attr("stroke", "black")
+        subbar.append("text")
+            .attr("x", id[1].Ny2*scale)
+            .attr("dx", "0.5em")
+            .attr("y", barWidth/2)
+            .attr("dy", "0.25em")
+            .text(Number(id[1].Ny1/id[1].Ny).toFixed(2))
+        
+        var subbar = bar.select("#bottom")
+        subbar.append("rect")
+            .attr("width", id[1].Ny2*scale)
+            .attr("height", barWidth)
+            .attr("fill", "white")
+            .attr("stroke", "black")
+        subbar.append("text")
+            .attr("text-anchor", "end")
+            .attr("dx", "-0.5em")
+            .attr("x", id[1].Ny2*scale)
+            .attr("y", barWidth/2)
+            .attr("dy", "0.25em")
+            .text(Number(id[1].Ny2/id[1].Ny).toFixed(2))
+        
+        if (id[0] == "#groupLeft") {
+            bar.attr("transform", `translate(-${paddingBars+barWidth}, ${id[1].Ny*scale}), rotate(270)`)
+        }
+        else {
+            bar.attr("transform", `translate(${id[1].Nx*scale + paddingBars}, ${id[1].Ny*scale}), rotate(270)`)
+        }
+    }
+
+
+      var newColors = [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)];
+      //var labelDataA = {labelUpper: ["small stones", "hidden"], labelLower: ["large stones", "hidden"], labelUpperLeft: ["", "hidden"], labelUpperRight: [labelAUpper, "hidden"], labelLowerLeft: [labelALower, "hidden"], labelLowerRight: [labelALower, "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment A with small kidney stones", labelRatioBarSideBottom: "Ratio of patients under treatment A with large kidney stones"};
+      //var labelDataB = {labelUpper: ["small stones", "hidden"], labelLower: ["large stones", "hidden"], labelUpperLeft: [labelBUpper, "hidden"], labelUpperRight: [labelBUpper, "hidden"], labelLowerLeft: [labelBLower, "hidden"], labelLowerRight: [labelBLower, "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment B with small kidney stones", labelRatioBarSideBottom: "Ratio of patients under treatment B with large kidney stones"};
+      var graphicalDataA = {padding: 1, scale: scale, textPadding: 30, color: newColors};
+      var graphicalDataB = {padding: 1, scale: scale, textPadding: 30, color: newColors};
+    var svg = d3.select("#figPlayground");
+      for (var id of [["#groupLeft", dataPGA], ["#groupRight", dataPGB]]) {
+        var g = svg.select(id[0]);
+        g.select("#rect1").attr("height", id[1].Ny1*scale).attr("width", id[1].Nx11*scale)
+        g.select("#text1").attr("x", id[1].Nx11*scale/2).attr("y", id[1].Ny1*scale/2).text(Number(id[1].Nx11/id[1].Nx*id[1].Ny1/id[1].Ny).toFixed(2))
+        g.select("#rect2").attr("height", id[1].Ny1*scale).attr("x", id[1].Nx11*scale).attr("width", id[1].Nx12*scale)
+        g.select("#text2").attr("x", (id[1].Nx11+id[1].Nx12/2)*scale).attr("y", id[1].Ny1/2*scale).text(Number(id[1].Nx12/id[1].Nx*id[1].Ny1/id[1].Ny).toFixed(2))
+        g.select("#rect3").attr("height", id[1].Ny2*scale).attr("y", id[1].Ny1*scale).attr("width", id[1].Nx21*scale)
+        g.select("#text3").attr("x", id[1].Nx21*scale/2).attr("y", (id[1].Ny1 + id[1].Ny2/2)*scale).text(Number(id[1].Nx21/id[1].Nx*id[1].Ny2/id[1].Ny).toFixed(2))
+        g.select("#rect4").attr("height", id[1].Ny2*scale).attr("x", id[1].Nx21*scale).attr("y", id[1].Ny1*scale).attr("width", id[1].Nx22*scale)
+        g.select("#text4").attr("x", (id[1].Nx21+id[1].Nx22/2)*scale).attr("y", (id[1].Ny1 + id[1].Ny2/2)*scale).text(Number(id[1].Nx22/id[1].Nx*id[1].Ny2/id[1].Ny).toFixed(2))
+      }
+        // coloring scheme
+        if (dataPGA.Nx11/dataPGA.Nx > dataPGB.Nx11/dataPGB.Nx){
+            d3.select("#groupLeft").select("#ratioBarTop").select("#left").select("rect").attr("fill", "green")
+            d3.select("#groupRight").select("#ratioBarTop").select("#left").select("rect").attr("fill", "red")
+        }
+        else{            
+            d3.select("#groupLeft").select("#ratioBarTop").select("#left").select("rect").attr("fill", "red")
+            d3.select("#groupRight").select("#ratioBarTop").select("#left").select("rect").attr("fill", "green")
+        }
+        if (dataPGA.Nx21/dataPGA.Nx > dataPGB.Nx21/dataPGB.Nx){
+            d3.select("#groupLeft").select("#ratioBarBottom").select("#left").select("rect").attr("fill", "green")
+            d3.select("#groupRight").select("#ratioBarBottom").select("#left").select("rect").attr("fill", "red")
+        }
+        else{            
+            d3.select("#groupLeft").select("#ratioBarBottom").select("#left").select("rect").attr("fill", "red")
+            d3.select("#groupRight").select("#ratioBarBottom").select("#left").select("rect").attr("fill", "green")
+        }
+        if (dataPGA.Nx11/dataPGA.Nx*dataPGA.Ny1/dataPGA.Ny + dataPGA.Nx21/dataPGA.Nx*dataPGA.Ny2/dataPGA.Ny > dataPGB.Nx11/dataPGB.Nx*dataPGB.Ny1/dataPGB.Ny + dataPGB.Nx21/dataPGB.Nx*dataPGB.Ny2/dataPGB.Ny){
+            d3.select("#groupLeft").select("#rect1").attr("fill", "green");
+            d3.select("#groupLeft").select("#rect3").attr("fill", "green");
+            d3.select("#groupRight").select("#rect1").attr("fill", "red");
+            d3.select("#groupRight").select("#rect3").attr("fill", "red");
+        }
+        else{
+            d3.select("#groupLeft").select("#rect1").attr("fill", "red");
+            d3.select("#groupLeft").select("#rect3").attr("fill", "red");
+            d3.select("#groupRight").select("#rect1").attr("fill", "green");
+            d3.select("#groupRight").select("#rect3").attr("fill", "green");
+        }
+
+      // set sliders to initial data
+      var slider1 = document.getElementById("rangeRatioA1");
+      var slider2 = document.getElementById("rangeRatioB1");
+      var slider3 = document.getElementById("rangeSuccA1");
+      var slider4 = document.getElementById("rangeSuccA2");
+      var slider5 = document.getElementById("rangeSuccB1");
+      var slider6 = document.getElementById("rangeSuccB2");
+      slider1.value = dataPGA.Ny1/dataPGA.Ny*100
+      slider2.value = dataPGB.Ny1/dataPGB.Ny*100
+      slider3.value = dataPGA.Nx11/dataPGA.Nx*100
+      slider4.value = dataPGA.Nx21/dataPGA.Nx*100
+      slider5.value = dataPGB.Nx11/dataPGB.Nx*100
+      slider6.value = dataPGB.Nx21/dataPGB.Nx*100
+
+      // slider1 input reaction 
+      slider1.oninput = function() {
+        dataPGA.Ny1 = this.value*dataPGA.Ny/100;
+        dataPGA.Ny2 = (100-this.value)*dataPGA.Ny/100;
+        
+        var g = d3.select("#groupLeft");
+        // update rectangle geometry
+        g.select("#rect1").attr("height", dataPGA.Ny1*scale)
+        g.select("#rect2").attr("height", dataPGA.Ny1*scale)
+        g.select("#rect3").attr("height", dataPGA.Ny2*scale).attr("y", dataPGA.Ny1*scale)
+        g.select("#rect4").attr("height", dataPGA.Ny2*scale).attr("y", dataPGA.Ny1*scale)
+        
+        // update ratio bar geometry
+        var ratioBarSide = g.select("#ratioBarSide");
+        var top = ratioBarSide.select("#top");
+        var rect = top.select("rect");
+        rect.attr("x", dataPGA.Ny2*scale).attr("width", dataPGA.Ny1*scale)
+        var text = top.select("text");
+        var txtval = Number(dataPGA.Ny1/dataPGA.Ny).toFixed(2)
+        text.attr("x", dataPGA.Ny2*scale).text(txtval)
+
+        var bottom = ratioBarSide.select("#bottom");
+        var rect = bottom.select("rect");
+        rect.attr("width", dataPGA.Ny2*scale)
+        var text = bottom.select("text");
+        var txtval = Number(dataPGA.Ny2/dataPGA.Ny).toFixed(2)
+        text.attr("x", dataPGA.Ny2*scale).text(txtval)
+        
+        // update text on rectangles
+        var textRect = g.select("#text1")
+        textRect.text(Number(dataPGA.Nx11/dataPGA.Nx*dataPGA.Ny1*dataPGA.Ny).toFixed(2))
+            .attr("y", (dataPGA.Ny1/2)*scale)
+        var textRect = g.select("#text2")
+        textRect.text(Number(dataPGA.Nx12/dataPGA.Nx*dataPGA.Ny1*dataPGA.Ny).toFixed(2))
+            .attr("y", (dataPGA.Ny1/2)*scale)
+        var textRect = g.select("#text3")
+        textRect.text(Number(dataPGA.Nx21/dataPGA.Nx*dataPGA.Ny2*dataPGA.Ny).toFixed(2))
+            .attr("y", (dataPGA.Ny1+dataPGA.Ny2/2)*scale)
+        var textRect = g.select("#text4")
+        textRect.text(Number(dataPGA.Nx22/dataPGA.Nx*dataPGA.Ny2*dataPGA.Ny).toFixed(2))
+            .attr("y", (dataPGA.Ny1+dataPGA.Ny2/2)*scale)
+        
+        // update color if necessary
+        if (dataPGA.Nx11/dataPGA.Nx*dataPGA.Ny1/dataPGA.Ny + dataPGA.Nx21/dataPGA.Nx*dataPGA.Ny2/dataPGA.Ny > dataPGB.Nx11/dataPGB.Nx*dataPGB.Ny1/dataPGB.Ny + dataPGB.Nx21/dataPGB.Nx*dataPGB.Ny2/dataPGB.Ny){
+            d3.select("#groupLeft").select("#rect1").attr("fill", "green");
+            d3.select("#groupLeft").select("#rect3").attr("fill", "green");
+            d3.select("#groupRight").select("#rect1").attr("fill", "red");
+            d3.select("#groupRight").select("#rect3").attr("fill", "red");
+        }
+        else{
+            d3.select("#groupLeft").select("#rect1").attr("fill", "red");
+            d3.select("#groupLeft").select("#rect3").attr("fill", "red");
+            d3.select("#groupRight").select("#rect1").attr("fill", "green");
+            d3.select("#groupRight").select("#rect3").attr("fill", "green");
+        }
+
+      } 
+      // slider 2 update function (see slider 1 for comments)
+      slider2.oninput = function() {
+        var g = d3.select("#groupRight");
+        dataPGB.Ny1 = this.value*dataPGB.Ny/100;
+        dataPGB.Ny2 = (100-this.value)*dataPGB.Ny/100;
+        g.select("#rect1").attr("height", dataPGB.Ny1*scale)
+        g.select("#rect2").attr("height", dataPGB.Ny1*scale)
+        g.select("#rect3").attr("height", dataPGB.Ny2*scale).attr("y", dataPGB.Ny1*scale)
+        g.select("#rect4").attr("height", dataPGB.Ny2*scale).attr("y", dataPGB.Ny1*scale)
+
+        var ratioBarSide = g.select("#ratioBarSide");
+        var top = ratioBarSide.select("#top");
+        var rect = top.select("rect");
+        rect.attr("x", dataPGB.Ny2*scale).attr("width", dataPGB.Ny1*scale)
+        var text = top.select("text");
+        var txtval = Number(dataPGB.Ny1/dataPGB.Ny).toFixed(2)
+        text.attr("x", dataPGB.Ny2*scale).text(txtval)
+
+        var bottom = ratioBarSide.select("#bottom");
+        var rect = bottom.select("rect");
+        rect.attr("width", dataPGB.Ny2*scale)
+        var text = bottom.select("text");
+        var txtval = Number(dataPGB.Ny2/dataPGB.Ny).toFixed(2)
+        text.attr("x", dataPGB.Ny2*scale).text(txtval)
+        
+        var textRect = g.select("#text1")
+        textRect.text(Number(dataPGB.Nx11/dataPGB.Nx*dataPGB.Ny1*dataPGB.Ny).toFixed(2))
+            .attr("y", (dataPGB.Ny1/2)*scale)
+        var textRect = g.select("#text2")
+        textRect.text(Number(dataPGB.Nx12/dataPGB.Nx*dataPGB.Ny1*dataPGB.Ny).toFixed(2))
+            .attr("y", (dataPGB.Ny1/2)*scale)
+        var textRect = g.select("#text3")
+        textRect.text(Number(dataPGB.Nx21/dataPGB.Nx*dataPGB.Ny2*dataPGB.Ny).toFixed(2))
+            .attr("y", (dataPGB.Ny1+dataPGB.Ny2/2)*scale)
+        var textRect = g.select("#text4")
+        textRect.text(Number(dataPGB.Nx22/dataPGB.Nx*dataPGB.Ny2*dataPGB.Ny).toFixed(2))
+            .attr("y", (dataPGB.Ny1+dataPGB.Ny2/2)*scale)
+        if (dataPGA.Nx11/dataPGA.Nx*dataPGA.Ny1/dataPGA.Ny + dataPGA.Nx21/dataPGA.Nx*dataPGA.Ny2/dataPGA.Ny > dataPGB.Nx11/dataPGB.Nx*dataPGB.Ny1/dataPGB.Ny + dataPGB.Nx21/dataPGB.Nx*dataPGB.Ny2/dataPGB.Ny){
+            d3.select("#groupLeft").select("#rect1").attr("fill", "green");
+            d3.select("#groupLeft").select("#rect3").attr("fill", "green");
+            d3.select("#groupRight").select("#rect1").attr("fill", "red");
+            d3.select("#groupRight").select("#rect3").attr("fill", "red");
+        }
+        else{
+            d3.select("#groupLeft").select("#rect1").attr("fill", "red");
+            d3.select("#groupLeft").select("#rect3").attr("fill", "red");
+            d3.select("#groupRight").select("#rect1").attr("fill", "green");
+            d3.select("#groupRight").select("#rect3").attr("fill", "green");
+        }
+      } 
+
+      slider3.oninput = function() {
+        var g = d3.select("#groupLeft");
+        dataPGA.Nx11 = this.value*dataPGA.Nx/100;
+        dataPGA.Nx12 = (100-this.value)*dataPGA.Nx/100;
+        g.select("#rect1").attr("width", dataPGA.Nx11*scale)
+        g.select("#rect2").attr("width", dataPGA.Nx12*scale).attr("x", dataPGA.Nx11*scale)
+
+        var ratioBarTop = g.select("#ratioBarTop");
+        var left = ratioBarTop.select("#left");
+        var rect = left.select("rect")
+        rect.attr("width", dataPGA.Nx11*scale);
+        var text = left.select("text");
+        var txtval = Number(dataPGA.Nx11/dataPGA.Nx).toFixed(2)
+        text.attr("x", dataPGA.Nx11*scale).text(txtval);
+        
+        var right = ratioBarTop.select("#right");
+        var rect = right.select("rect")
+        rect.attr("x", dataPGA.Nx11*scale).attr("width", dataPGA.Nx12*scale);
+        var text = right.select("text");
+        var txtval = Number(dataPGA.Nx12/dataPGA.Nx).toFixed(2)
+        text.attr("x", dataPGA.Nx11*scale).text(txtval);
+        
+
+        var textRect = g.select("#text1")
+        textRect.text(Number(dataPGA.Nx11/dataPGA.Nx*dataPGA.Ny1*dataPGA.Ny).toFixed(2))
+            .attr("x", (dataPGA.Nx11/2)*scale)
+        var textRect = g.select("#text2")
+        textRect.text(Number(dataPGA.Nx12/dataPGA.Nx*dataPGA.Ny1*dataPGA.Ny).toFixed(2))
+            .attr("x", (dataPGA.Nx11 + dataPGA.Nx12/2)*scale)
+        
+        if (dataPGA.Nx11/dataPGA.Nx > dataPGB.Nx11/dataPGB.Nx){
+            d3.select("#groupLeft").select("#ratioBarTop").select("#left").select("rect").attr("fill", "green")
+            d3.select("#groupRight").select("#ratioBarTop").select("#left").select("rect").attr("fill", "red")
+        }
+        else{            
+            d3.select("#groupLeft").select("#ratioBarTop").select("#left").select("rect").attr("fill", "red")
+            d3.select("#groupRight").select("#ratioBarTop").select("#left").select("rect").attr("fill", "green")
+        }
+        if (dataPGA.Nx11/dataPGA.Nx*dataPGA.Ny1/dataPGA.Ny + dataPGA.Nx21/dataPGA.Nx*dataPGA.Ny2/dataPGA.Ny > dataPGB.Nx11/dataPGB.Nx*dataPGB.Ny1/dataPGB.Ny + dataPGB.Nx21/dataPGB.Nx*dataPGB.Ny2/dataPGB.Ny){
+            d3.select("#groupLeft").select("#rect1").attr("fill", "green");
+            d3.select("#groupLeft").select("#rect3").attr("fill", "green");
+            d3.select("#groupRight").select("#rect1").attr("fill", "red");
+            d3.select("#groupRight").select("#rect3").attr("fill", "red");
+        }
+        else{
+            d3.select("#groupLeft").select("#rect1").attr("fill", "red");
+            d3.select("#groupLeft").select("#rect3").attr("fill", "red");
+            d3.select("#groupRight").select("#rect1").attr("fill", "green");
+            d3.select("#groupRight").select("#rect3").attr("fill", "green");
+        }
+      }      
+
+      slider4.oninput = function() {
+        var g = d3.select("#groupLeft");
+        dataPGA.Nx21 = this.value*dataPGA.Nx/100;
+        dataPGA.Nx22 = (100-this.value)*dataPGA.Nx/100;
+        g.select("#rect3").attr("width", dataPGA.Nx21*scale)
+        g.select("#rect4").attr("width", dataPGA.Nx22*scale).attr("x", dataPGA.Nx21*scale)
+
+        var ratioBarBottom = g.select("#ratioBarBottom");
+        var left = ratioBarBottom.select("#left");
+        var rect = left.select("rect")
+        rect.attr("width", dataPGA.Nx21*scale);
+        var text = left.select("text");
+        var txtval = Number(dataPGA.Nx21/dataPGA.Nx).toFixed(2)
+        text.attr("x", dataPGA.Nx21*scale).text(txtval);
+
+        var right = ratioBarBottom.select("#right");
+        var rect = right.select("rect")
+        rect.attr("x", dataPGA.Nx21*scale).attr("width", dataPGA.Nx22*scale);
+        var text = right.select("text");
+        var txtval = Number(dataPGA.Nx22/dataPGA.Nx).toFixed(2)
+        text.attr("x", dataPGA.Nx21*scale).text(txtval);
+
+
+        var textRect = g.select("#text3")
+        textRect.text(Number(dataPGA.Nx21/dataPGA.Nx*dataPGA.Ny2*dataPGA.Ny).toFixed(2))
+            .attr("x", (dataPGA.Nx21/2)*scale)
+        var textRect = g.select("#text4")
+        textRect.text(Number(dataPGA.Nx22/dataPGA.Nx*dataPGA.Ny2*dataPGA.Ny).toFixed(2))
+            .attr("x", (dataPGA.Nx21 + dataPGA.Nx22/2)*scale)
+        if (dataPGA.Nx21/dataPGA.Nx > dataPGB.Nx21/dataPGB.Nx){
+            d3.select("#groupLeft").select("#ratioBarBottom").select("#left").select("rect").attr("fill", "green")
+            d3.select("#groupRight").select("#ratioBarBottom").select("#left").select("rect").attr("fill", "red")
+        }
+        else{            
+            d3.select("#groupLeft").select("#ratioBarBottom").select("#left").select("rect").attr("fill", "red")
+            d3.select("#groupRight").select("#ratioBarBottom").select("#left").select("rect").attr("fill", "green")
+        }
+        if (dataPGA.Nx11/dataPGA.Nx*dataPGA.Ny1/dataPGA.Ny + dataPGA.Nx21/dataPGA.Nx*dataPGA.Ny2/dataPGA.Ny > dataPGB.Nx11/dataPGB.Nx*dataPGB.Ny1/dataPGB.Ny + dataPGB.Nx21/dataPGB.Nx*dataPGB.Ny2/dataPGB.Ny){
+            d3.select("#groupLeft").select("#rect1").attr("fill", "green");
+            d3.select("#groupLeft").select("#rect3").attr("fill", "green");
+            d3.select("#groupRight").select("#rect1").attr("fill", "red");
+            d3.select("#groupRight").select("#rect3").attr("fill", "red");
+        }
+        else{
+            d3.select("#groupLeft").select("#rect1").attr("fill", "red");
+            d3.select("#groupLeft").select("#rect3").attr("fill", "red");
+            d3.select("#groupRight").select("#rect1").attr("fill", "green");
+            d3.select("#groupRight").select("#rect3").attr("fill", "green");
+        }
+      } 
+
+      slider5.oninput = function() {
+        var g = d3.select("#groupRight");
+        dataPGB.Nx11 = this.value*dataPGB.Nx/100;
+        dataPGB.Nx12 = (100-this.value)*dataPGB.Nx/100;
+        g.select("#rect1").attr("width", dataPGB.Nx11*scale)
+        g.select("#rect2").attr("width", dataPGB.Nx12*scale).attr("x", dataPGB.Nx11*scale)
+
+        var ratioBarTop = g.select("#ratioBarTop");
+        var left = ratioBarTop.select("#left");
+        var rect = left.select("rect")
+        rect.attr("width", dataPGB.Nx11*scale);
+        var text = left.select("text");
+        var txtval = Number(dataPGB.Nx11/dataPGB.Nx).toFixed(2)
+        text.attr("x", dataPGB.Nx11*scale).text(txtval);
+
+        var right = ratioBarTop.select("#right");
+        var rect = right.select("rect")
+        rect.attr("x", dataPGB.Nx11*scale).attr("width", dataPGB.Nx12*scale);
+        var text = right.select("text");
+        var txtval = Number(dataPGB.Nx12/dataPGB.Nx).toFixed(2)
+        text.attr("x", dataPGB.Nx11*scale).text(txtval);
+
+        
+        var textRect = g.select("#text1")
+        textRect.text(Number(dataPGB.Nx11/dataPGB.Nx*dataPGB.Ny1*dataPGB.Ny).toFixed(2))
+            .attr("x", (dataPGB.Nx11/2)*scale)
+        var textRect = g.select("#text2")
+        textRect.text(Number(dataPGB.Nx12/dataPGB.Nx*dataPGB.Ny1*dataPGB.Ny).toFixed(2))
+            .attr("x", (dataPGB.Nx11 + dataPGB.Nx12/2)*scale)
+        if (dataPGA.Nx11/dataPGA.Nx > dataPGB.Nx11/dataPGB.Nx){
+            d3.select("#groupLeft").select("#ratioBarTop").select("#left").select("rect").attr("fill", "green")
+            d3.select("#groupRight").select("#ratioBarTop").select("#left").select("rect").attr("fill", "red")
+        }
+        else{            
+            d3.select("#groupLeft").select("#ratioBarTop").select("#left").select("rect").attr("fill", "red")
+            d3.select("#groupRight").select("#ratioBarTop").select("#left").select("rect").attr("fill", "green")
+        }
+        if (dataPGA.Nx11/dataPGA.Nx*dataPGA.Ny1/dataPGA.Ny + dataPGA.Nx21/dataPGA.Nx*dataPGA.Ny2/dataPGA.Ny > dataPGB.Nx11/dataPGB.Nx*dataPGB.Ny1/dataPGB.Ny + dataPGB.Nx21/dataPGB.Nx*dataPGB.Ny2/dataPGB.Ny){
+            d3.select("#groupLeft").select("#rect1").attr("fill", "green");
+            d3.select("#groupLeft").select("#rect3").attr("fill", "green");
+            d3.select("#groupRight").select("#rect1").attr("fill", "red");
+            d3.select("#groupRight").select("#rect3").attr("fill", "red");
+        }
+        else{
+            d3.select("#groupLeft").select("#rect1").attr("fill", "red");
+            d3.select("#groupLeft").select("#rect3").attr("fill", "red");
+            d3.select("#groupRight").select("#rect1").attr("fill", "green");
+            d3.select("#groupRight").select("#rect3").attr("fill", "green");
+        }
+      } 
+
+      slider6.oninput = function() {
+        var g = d3.select("#groupRight");
+        dataPGB.Nx21 = this.value*dataPGB.Nx/100;
+        dataPGB.Nx22 = (100-this.value)*dataPGB.Nx/100;
+        g.select("#rect3").attr("width", dataPGB.Nx21*scale)
+        g.select("#rect4").attr("width", dataPGB.Nx22*scale).attr("x", dataPGB.Nx21*scale)
+
+        var ratioBarBottom = g.select("#ratioBarBottom");
+        var left = ratioBarBottom.select("#left");
+        var rect = left.select("rect")
+        rect.attr("width", dataPGB.Nx21*scale);
+        var text = left.select("text");
+        var txtval = Number(dataPGB.Nx21/dataPGB.Nx).toFixed(2)
+        text.attr("x", dataPGB.Nx21*scale).text(txtval);
+
+        var right = ratioBarBottom.select("#right");
+        var rect = right.select("rect")
+        rect.attr("x", dataPGB.Nx21*scale).attr("width", dataPGB.Nx22*scale);
+        var text = right.select("text");
+        var txtval = Number(dataPGB.Nx22/dataPGB.Nx).toFixed(2)
+        text.attr("x", dataPGB.Nx21*scale).text(txtval);
+
+        var textRect = g.select("#text3")
+        textRect.text(Number(dataPGB.Nx21/dataPGB.Nx*dataPGB.Ny2*dataPGB.Ny).toFixed(2))
+            .attr("x", (dataPGB.Nx21/2)*scale)
+        var textRect = g.select("#text4")
+        textRect.text(Number(dataPGB.Nx22/dataPGB.Nx*dataPGB.Ny2*dataPGB.Ny).toFixed(2))
+            .attr("x", (dataPGB.Nx21 + dataPGB.Nx22/2)*scale)
+        if (dataPGA.Nx21/dataPGA.Nx > dataPGB.Nx21/dataPGB.Nx){
+            d3.select("#groupLeft").select("#ratioBarBottom").select("#left").select("rect").attr("fill", "green")
+            d3.select("#groupRight").select("#ratioBarBottom").select("#left").select("rect").attr("fill", "red")
+        }
+        else{            
+            d3.select("#groupLeft").select("#ratioBarBottom").select("#left").select("rect").attr("fill", "red")
+            d3.select("#groupRight").select("#ratioBarBottom").select("#left").select("rect").attr("fill", "green")
+        }
+        if (dataPGA.Nx11/dataPGA.Nx*dataPGA.Ny1/dataPGA.Ny + dataPGA.Nx21/dataPGA.Nx*dataPGA.Ny2/dataPGA.Ny > dataPGB.Nx11/dataPGB.Nx*dataPGB.Ny1/dataPGB.Ny + dataPGB.Nx21/dataPGB.Nx*dataPGB.Ny2/dataPGB.Ny){
+            d3.select("#groupLeft").select("#rect1").attr("fill", "green");
+            d3.select("#groupLeft").select("#rect3").attr("fill", "green");
+            d3.select("#groupRight").select("#rect1").attr("fill", "red");
+            d3.select("#groupRight").select("#rect3").attr("fill", "red");
+        }
+        else{
+            d3.select("#groupLeft").select("#rect1").attr("fill", "red");
+            d3.select("#groupLeft").select("#rect3").attr("fill", "red");
+            d3.select("#groupRight").select("#rect1").attr("fill", "green");
+            d3.select("#groupRight").select("#rect3").attr("fill", "green");
+        }
+      } 
+
+
+      
+  
+  </script>
