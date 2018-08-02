@@ -38,7 +38,7 @@
     pointer-events: none;	}
 </style>
     <dt-article><p>
-                        <em>Click anywhere on the figure to group by kidney stone size.</em> We use yellow for patients with <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones and 
+                        Now we need to differentiate between small and large kidney stones. <em>Click anywhere on the figure to group by kidney stone size.</em> We use yellow for patients with <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones and 
                         blue for <span style="background-color: rgb(0, 163, 255)">large</span> ones.
                         </p>
                         
@@ -48,6 +48,7 @@
                     <svg id="figSepGender" onclick="clickFigSepGender()" style="background: grey">
                         </svg>
                         <div id="divHidden" style= "visibility: hidden">
+                        <p> Hover over the following items to see its meaning on the figure.</p>
                         <ul>
                             <li id="item1" onmouseover="mouseover1()" onmouseleave="mouseleave1()">Among patients treated with treatment A, there were more patients with <span style="background-color: rgb(0, 163, 255)">large</span> 
                               kidney stones than those with <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones </li>
@@ -72,13 +73,13 @@
                             {
                                 var svg = d3.select("#figSepGender")
                                 svg.select("#groupLeft").attr("opacity", 0.35)                
-                                document.getElementById("item1").style = "background-color: green"
+                                document.getElementById("item2").style = "background-color: green"
                             }
                             var mouseleave2 = function()
                             {
                                 var svg = d3.select("#figSepGender")
                                 svg.select("#groupLeft").attr("opacity", 1)                              
-                                document.getElementById("item1").style = "background-color: white"
+                                document.getElementById("item2").style = "background-color: white"
                             }
                             </script>
 
