@@ -428,7 +428,7 @@ var buildGroup = function(groupref, data, graphicalData, tooltip_ref){
             .attr("dy", "0.35em")
         
         g3 = fig.append("g")
-            .attr("transform", `translate(0, ${(data.Ny1+data.Ny2)*graphicalData.scale+graphicalData.widthBar})`)
+            .attr("transform", `translate(0, ${(data.Ny1+data.Ny2)*graphicalData.scale+graphicalData.paddingBar})`)
             .attr("class", "ratioBarBottom")
             .attr("id", "leftestRatioBarBottom")
             .attr("visibility", graphicalData.subdivideHori?"visible":"hidden")
@@ -450,7 +450,7 @@ var buildGroup = function(groupref, data, graphicalData, tooltip_ref){
             .attr("text-anchor", "end")
 
         g4 = fig.append("g")
-        .attr("transform", `translate(${(data.Nx21)*graphicalData.scale}, ${(data.Ny1+data.Ny2)*graphicalData.scale+graphicalData.widthBar})`)
+        .attr("transform", `translate(${(data.Nx21)*graphicalData.scale}, ${(data.Ny1+data.Ny2)*graphicalData.scale+graphicalData.paddingBar})`)
         .attr("class", "ratioBarBottom")
         .attr("id", "rightestRatioBarBottom")
         .attr("visibility", graphicalData.subdivideHori?"visible":"hidden")
@@ -471,7 +471,7 @@ var buildGroup = function(groupref, data, graphicalData, tooltip_ref){
 
 
     var widthBlock = data.Nx*graphicalData.scale + graphicalData.textPadding;
-    var heightBlock = data.Ny*graphicalData.scale + 2*graphicalData.textPadding;
+    var heightBlock = data.Ny*graphicalData.scale + 2*graphicalData.textPadding + graphicalData.paddingBar;
 
 
     // Build overlay blocks on top of everything for handling tooltips
