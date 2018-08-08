@@ -566,7 +566,104 @@
                       <script src="playground.js"></script>
 
                 
-
+<hr>
+ <div class="row">
+                          <div class="column">
+                              <table>
+                              <tr>
+                                      <td>Fraction of sailors donning life vest in good weather</td>
+                                      <td><input type="range" min="0" max="100" value="50" step="0.01" class="slider" id="rangeRatioA1_general"></td>
+                                      <td><span id="indicator1_general"></span></td>
+                              </tr>
+                              <tr>
+                                      <td>Rescue probability with life vest in good weather</td>
+                                      <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccA1_general" style="background-color:  #d3d3d3"></td>
+                                      <td><span id="indicator3_general"></span></td>
+                              </tr>
+                              <tr>
+                                      <td>Rescue probability with life vest in bad weather</td>
+                                      <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccA2_general" style="background-color:  #d3d3d3"></td>
+                                      <td><span id="indicator4_general"></span></td>
+                              </tr>
+                          </table>
+                          </div>
+                          <div class="column">
+                                  <table>
+                                          <tr>
+                                                  <td>Fraction of sailors donning life vest in bad weather</td>
+                                                  <td><input type="range" min="0" max="100" width="20px" value="50" class="slider" id="rangeRatioB1_general"></td>
+                                                  <td><span id="indicator2_general"></span></td>
+                                          </tr>
+                                          <tr>
+                                                  <td>Rescue probability without life vest in good weather</td>
+                                                  <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccB1_general" style="background-color:  #d3d3d3"></td>
+                                                  <td><span id="indicator5_general"></span></td>
+                                          </tr>
+                                          <tr>
+                                                  <td>Rescue probability without life vest in bad weather</td>
+                                                  <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccB2_general" style="background-color:  #d3d3d3"></td>
+                                                  <td><span id="indicator6_general"></span></td>
+                                          </tr>
+                                      </table>
+                          </div>
+                        </div> 
+                        
+                      <figure>
+                      <svg id="figPlayground_general" onclick="" style="background: grey">    <!--viewBox="-70 -70 1200 350">-->
+                          <g id="giantGroup">
+                        <g id="groupLeft">      
+                          <text id="labelGood"></text>
+                          <text id="labelBad"></text>
+                            <text id="title">life vest</text>
+                        <rect id="rect1" width = 540 height=80 fill="white" stroke="black" ></rect>
+                        <text id="text1" text-anchor="middle" dy="0.5em"></text>
+                        <rect id="rect2" x=540 width=60 height=80 fill="white" stroke="black"></rect>
+                        <text id="text2" text-anchor="middle"></text>
+                        <rect id="rect3" y=80 width=420 height=160 fill="white" stroke="black"></rect>
+                        <text id="text3" text-anchor="middle"></text>
+                        <rect id="rect4" y=80 x= 420 width=180 height=160 fill="white" stroke="black"></rect>
+                        <text id="text4" text-anchor="middle"></text>
+                        <g id="ratioBarTop">
+                            <g id="left"></g>
+                            <g id="right"></g>
+                        </g>
+                        <g id="ratioBarBottom">
+                              <g id="left"></g>
+                              <g id="right"></g>
+                          </g>
+                        <g id="ratioBarSide">
+                              <g id="top"></g>
+                              <g id="bottom"></g>
+                          </g>
+                      </g>
+                      <g id="groupRight">     
+                          <text id="labelGood"></text>
+                          <text id="labelBad"></text> 
+                              <text id="title">no life vest</text>
+                              <rect id="rect1" width = 540 height=80 fill="white" stroke="black" ></rect>
+                              <text id="text1" text-anchor="middle"></text>
+                              <rect id="rect2" x=540 width=60 height=80 fill="white" stroke="black"></rect>
+                              <text id="text2" text-anchor="middle"></text>
+                              <rect id="rect3" y=80 width=420 height=160 fill="white" stroke="black"></rect>
+                              <text id="text3" text-anchor="middle"></text>
+                              <rect id="rect4" y=80 x= 420 width=180 height=160 fill="white" stroke="black"></rect>
+                              <text id="text4" text-anchor="middle"></text>
+                              <g id="ratioBarTop">
+                                      <g id="left"></g>
+                                      <g id="right"></g>
+                                  </g>
+                              <g id="ratioBarBottom">
+                                      <g id="left"></g>
+                                      <g id="right"></g>
+                                  </g>
+                              <g id="ratioBarSide">
+                                      <g id="top"></g>
+                                      <g id="bottom"></g>
+                                  </g>
+                            </g>
+                          </g>
+                      </svg></figure>
+                      <script src="playground_general.js"></script>
 
 <!--// activate animations if elements come into view-->
                       

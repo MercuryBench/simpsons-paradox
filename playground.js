@@ -15,153 +15,161 @@ var dataPGA_actually = {Nx: 1, Ny: 1, Nx11: 0.95, Nx12: 0.05, Nx21: 0.75, Nx22: 
                           var paddingText = 20
                           
                           var svg = d3.select("#figPlayground");
-                          // translate right group away from left group
-                          svg.select("#groupRight").attr("transform",  `translate(${dataPGA.Nx*scale+paddingGroups}, 0)`)
-                          //svg.attr("viewBox", `-${paddingBars+barWidth+paddingFig} -${paddingBars+barWidth+paddingFig} ${(dataPGA.Nx+dataPGB.Nx)*scale + paddingGroups + 2*paddingBars + paddingBars+barWidth +2*paddingFig} ${(dataPGA.Ny)*scale + paddingGroups + 2*paddingBars + paddingBars+barWidth} `)
-                          svg.select("#groupLeft").select("#title")
-                              .attr("transform", `translate(0, -${paddingBars+barWidth+paddingBars})`)
-                              .style("font-size", heightText)
-                          svg.select("#groupRight").select("#title")
-                              .attr("transform", `translate(0, -${paddingBars+barWidth+paddingBars})`)
-                              .style("font-size", heightText)
-                          svg.attr("width", (dataPGA.Nx+dataPGB.Nx)*scale + paddingGroups + 2*paddingBars + paddingBars+barWidth +2*paddingFig + 2.5*paddingText)
-                              .attr("height", (dataPGA.Ny)*scale + paddingGroups + 2*paddingBars + 2*paddingBars+barWidth + heightText)
+                          
+                          var graphicalData = {scale: scale, paddingGroups: paddingGroups, paddingBars: paddingBars, paddingFig: paddingFig, heightText: heightText, barWidth: barWidth, paddingText: paddingText}
+                          
+                      var buildPlayground = function(fig, dataA, dataB, graphicalData)
+                      {
                       
-                          svg.select("#giantGroup").attr("transform", `translate(${paddingBars+barWidth+paddingFig+paddingText}, ${2*paddingBars+barWidth+paddingFig+heightText})`)
+                          // translate right group away from left group
+                          fig.select("#groupRight").attr("transform",  `translate(${dataA.Nx*scale+graphicalData.paddingGroups}, 0)`)
+                          //fig.attr("viewBox", `-${paddingBars+barWidth+paddingFig} -${paddingBars+barWidth+paddingFig} ${(dataA.Nx+dataB.Nx)*scale + paddingGroups + 2*paddingBars + paddingBars+barWidth +2*paddingFig} ${(dataA.Ny)*scale + paddingGroups + 2*paddingBars + paddingBars+barWidth} `)
+                          fig.select("#groupLeft").select("#title")
+                              .attr("transform", `translate(0, -${graphicalData.paddingBars+graphicalData.barWidth+graphicalData.paddingBars})`)
+                              .style("font-size", graphicalData.heightText)
+                          fig.select("#groupRight").select("#title")
+                              .attr("transform", `translate(0, -${graphicalData.paddingBars+graphicalData.barWidth+graphicalData.paddingBars})`)
+                              .style("font-size", graphicalData.heightText)
+                          fig.attr("width", (dataA.Nx+dataB.Nx)*scale + graphicalData.paddingGroups + 2*graphicalData.paddingBars + graphicalData.paddingBars+graphicalData.barWidth +2*graphicalData.paddingFig + 2.5*graphicalData.paddingText)
+                              .attr("height", (dataA.Ny)*graphicalData.scale + graphicalData.paddingGroups + 2*graphicalData.paddingBars + 2*graphicalData.paddingBars+graphicalData.barWidth + graphicalData.heightText)
+                      
+                          fig.select("#giantGroup").attr("transform", `translate(${graphicalData.paddingBars+graphicalData.barWidth+graphicalData.paddingFig+graphicalData.paddingText}, ${2*graphicalData.paddingBars+graphicalData.barWidth+graphicalData.paddingFig+graphicalData.heightText})`)
                       
                           
                               
                           // for both left and right group do:
-                          for (var id of [["#groupLeft", dataPGA], ["#groupRight", dataPGB]]) {
-                              var g = svg.select(id[0]);
+                          for (var id of [["#groupLeft", dataA], ["#groupRight", dataB]]) {
+                              var g = fig.select(id[0]);
                       
                       
                               // Build "ratio bar on top"
                               var bar = g.select("#ratioBarTop")
                               var subbar = bar.select("#left")
                               subbar.append("rect")
-                                  .attr("width", id[1].Nx11*scale)
-                                  .attr("height", barWidth)
+                                  .attr("width", id[1].Nx11*graphicalData.scale)
+                                  .attr("height", graphicalData.barWidth)
                                   .attr("fill", "white")
                                   .attr("stroke", "black")
                               subbar.append("text")
                                   .attr("text-anchor", "end")
                                   .attr("dx", "-0.5em")
-                                  .attr("x", id[1].Nx11*scale)
-                                  .attr("y", barWidth/2)
+                                  .attr("x", id[1].Nx11*graphicalData.scale)
+                                  .attr("y", graphicalData.barWidth/2)
                                   .attr("dy", "0.25em")
                                   .text(Number(id[1].Nx11/id[1].Nx).toFixed(2))
                               
                               var subbar = bar.select("#right")
                               subbar.append("rect")
-                                  .attr("x", id[1].Nx11*scale)
-                                  .attr("width", id[1].Nx12*scale)
-                                  .attr("height", barWidth)
+                                  .attr("x", id[1].Nx11*graphicalData.scale)
+                                  .attr("width", id[1].Nx12*graphicalData.scale)
+                                  .attr("height", graphicalData.barWidth)
                                   .attr("fill", "white")
                                   .attr("stroke", "black")
                               subbar.append("text")
-                                  .attr("x", id[1].Nx11*scale)
+                                  .attr("x", id[1].Nx11*graphicalData.scale)
                                   .attr("dx", "0.5em")
-                                  .attr("y", barWidth/2)
+                                  .attr("y", graphicalData.barWidth/2)
                                   .attr("dy", "0.25em")
                                   .text(Number(id[1].Nx12/id[1].Nx).toFixed(2))
                               
-                              bar.attr("transform", `translate(0, -${paddingBars+barWidth})`)
+                              bar.attr("transform", `translate(0, -${graphicalData.paddingBars+graphicalData.barWidth})`)
                       
                               // Build "ratio bar at the bottom"
                               var bar = g.select("#ratioBarBottom")
                               var subbar = bar.select("#left")
                               subbar.append("rect")
-                                  .attr("width", id[1].Nx21*scale)
-                                  .attr("height", barWidth)
+                                  .attr("width", id[1].Nx21*graphicalData.scale)
+                                  .attr("height", graphicalData.barWidth)
                                   .attr("fill", "white")
                                   .attr("stroke", "black")
                               subbar.append("text")
                                   .attr("text-anchor", "end")
                                   .attr("dx", "-0.5em")
-                                  .attr("x", id[1].Nx21*scale)
-                                  .attr("y", barWidth/2)
+                                  .attr("x", id[1].Nx21*graphicalData.scale)
+                                  .attr("y", graphicalData.barWidth/2)
                                   .attr("dy", "0.25em")
                                   .text(Number(id[1].Nx21/id[1].Nx).toFixed(2))
                               
                               var subbar = bar.select("#right")
                               subbar.append("rect")
-                                  .attr("x", id[1].Nx21*scale)
-                                  .attr("width", id[1].Nx22*scale)
-                                  .attr("height", barWidth)
+                                  .attr("x", id[1].Nx21*graphicalData.scale)
+                                  .attr("width", id[1].Nx22*graphicalData.scale)
+                                  .attr("height", graphicalData.barWidth)
                                   .attr("fill", "white")
                                   .attr("stroke", "black")
                               subbar.append("text")
-                                  .attr("x", id[1].Nx21*scale)
+                                  .attr("x", id[1].Nx21*graphicalData.scale)
                                   .attr("dx", "0.5em")
-                                  .attr("y", barWidth/2)
+                                  .attr("y", graphicalData.barWidth/2)
                                   .attr("dy", "0.25em")
                                   .text(Number(id[1].Nx22/id[1].Nx).toFixed(2))
                               
-                              bar.attr("transform", `translate(0, ${id[1].Ny*scale + paddingBars})`)
+                              bar.attr("transform", `translate(0, ${id[1].Ny*graphicalData.scale + graphicalData.paddingBars})`)
                       
                               // build "ratio bar at the side"
                               var bar = g.select("#ratioBarSide")
                               var subbar = bar.select("#top")
                               subbar.append("rect")
-                                  .attr("x", id[1].Ny2*scale)
-                                  .attr("width", id[1].Ny1*scale)
-                                  .attr("height", barWidth)
+                                  .attr("x", id[1].Ny2*graphicalData.scale)
+                                  .attr("width", id[1].Ny1*graphicalData.scale)
+                                  .attr("height", graphicalData.barWidth)
                                   .attr("fill", "white")
                                   .attr("stroke", "black")
                               subbar.append("text")
-                                  .attr("x", id[1].Ny2*scale)
+                                  .attr("x", id[1].Ny2*graphicalData.scale)
                                   .attr("dx", "0.5em")
-                                  .attr("y", barWidth/2)
+                                  .attr("y", graphicalData.barWidth/2)
                                   .attr("dy", "0.25em")
                                   .text(Number(id[1].Ny1/id[1].Ny).toFixed(2))
                               
                               var subbar = bar.select("#bottom")
                               subbar.append("rect")
-                                  .attr("width", id[1].Ny2*scale)
-                                  .attr("height", barWidth)
+                                  .attr("width", id[1].Ny2*graphicalData.scale)
+                                  .attr("height", graphicalData.barWidth)
                                   .attr("fill", "white")
                                   .attr("stroke", "black")
                               subbar.append("text")
                                   .attr("text-anchor", "end")
                                   .attr("dx", "-0.5em")
-                                  .attr("x", id[1].Ny2*scale)
-                                  .attr("y", barWidth/2)
+                                  .attr("x", id[1].Ny2*graphicalData.scale)
+                                  .attr("y", graphicalData.barWidth/2)
                                   .attr("dy", "0.25em")
                                   .text(Number(id[1].Ny2/id[1].Ny).toFixed(2))
                               
                               if (id[0] == "#groupLeft") {
-                                  bar.attr("transform", `translate(-${paddingBars+barWidth}, ${id[1].Ny*scale}), rotate(270)`)
+                                  bar.attr("transform", `translate(-${graphicalData.paddingBars+graphicalData.barWidth}, ${id[1].Ny*graphicalData.scale}), rotate(270)`)
                               }
                               else {
-                                  bar.attr("transform", `translate(${id[1].Nx*scale + paddingBars}, ${id[1].Ny*scale}), rotate(270)`)
+                                  bar.attr("transform", `translate(${id[1].Nx*graphicalData.scale + graphicalData.paddingBars}, ${id[1].Ny*graphicalData.scale}), rotate(270)`)
                               }
                               // add label for good and bad weather
-                               var g = svg.select(id[0])
+                               var g = fig.select(id[0])
 
                                if (id[0] == "#groupLeft") {
                                g.select("#labelGood")
                                 .attr("text-anchor", "middle")
-                                .attr("transform", `translate(${-graphicalDataA.paddingBar-5}, ${dataPGA.Ny1/2*scale})`+ " rotate(270)")
+                                .attr("transform", `translate(${-graphicalData.paddingBars-graphicalData.heightText}, ${dataA.Ny1/2*graphicalData.scale})`+ " rotate(270)")
                                 .text("good weather")
                                g.select("#labelBad")
                                 .attr("text-anchor", "middle")
-                                .attr("transform", `translate(${-graphicalDataA.paddingBar-5}, ${(dataPGA.Ny1+dataPGA.Ny2/2)*scale})`+ " rotate(270)")
+                                .attr("transform", `translate(${-graphicalData.paddingBars-graphicalData.heightText}, ${(dataA.Ny1+dataA.Ny2/2)*graphicalData.scale})`+ " rotate(270)")
                                 .text("bad weather")
                                }
                                else{
                                 // add label for good and bad weather
-                               var g = svg.select("#groupRight")
+                               var g = fig.select("#groupRight")
                                g.select("#labelGood")
                                 .attr("text-anchor", "middle")
-                                .attr("transform", `translate(${id[1].Nx*scale + graphicalDataB.paddingBar + heightText}, ${dataPGA.Ny1/2*scale})`+ " rotate(270)")
+                                .attr("transform", `translate(${id[1].Nx*graphicalData.scale + graphicalData.paddingBars + 1.5*graphicalData.heightText}, ${dataA.Ny1/2*scale})`+ " rotate(270)")
                                 .text("good weather")
                                g.select("#labelBad")
                                 .attr("text-anchor", "middle")
-                                .attr("transform", `translate(${id[1].Nx*scale + graphicalDataB.paddingBar + heightText}, ${(dataPGA.Ny1+dataPGA.Ny2/2)*scale})`+ " rotate(270)")
+                                .attr("transform", `translate(${id[1].Nx*graphicalData.scale + graphicalData.paddingBars + 1.5*graphicalData.heightText}, ${(dataA.Ny1+dataA.Ny2/2)*graphicalData.scale})`+ " rotate(270)")
                                 .text("bad weather")
                                }
 
+                          }
+                          
                           }
                               var testForParadox = function(dataA, dataB){
                                   var ratio1AhigherB = (dataA.Nx11/dataA.Nx > dataB.Nx11/dataB.Nx);
@@ -189,11 +197,6 @@ var dataPGA_actually = {Nx: 1, Ny: 1, Nx11: 0.95, Nx12: 0.05, Nx21: 0.75, Nx22: 
                       
                       var updateFigure = function(fig, dataA, dataB)
                           {
-                              var rs = calculateTotalRatios(dataA, dataB);
-                              var ra = rs[0], rb = rs[1];
-                      
-                              d3.select("#totalRatioA").text(Number(ra).toFixed(2))
-                              d3.select("#totalRatioB").text(Number(rb).toFixed(2))
                               
                       
                               // update left group
@@ -409,7 +412,10 @@ var dataPGA_actually = {Nx: 1, Ny: 1, Nx11: 0.95, Nx12: 0.05, Nx21: 0.75, Nx22: 
                               
                               
                       
-                              // update paradox status
+                              
+                          }
+                          var updateParadox = function(dataA, dataB)
+                          {// update paradox status
                               if (testForParadox(dataA, dataB)) {
                                 d3.select("#p_paradox").text("Yes");
                                 document.getElementById("explanation").innerHTML = "<b>Well done!</b> In this scenario, chances of rescue are not too bad in total,"
@@ -420,9 +426,21 @@ var dataPGA_actually = {Nx: 1, Ny: 1, Nx11: 0.95, Nx12: 0.05, Nx21: 0.75, Nx22: 
                                   d3.select("#p_paradox").text("No");
                               }
                           }
+                          
+                          var updateTotalRatio = function(dataA, dataB)
+                          {
+                          
+                              var rs = calculateTotalRatios(dataA, dataB);
+                              var ra = rs[0], rb = rs[1];
                       
+                              d3.select("#totalRatioA").text(Number(ra).toFixed(2))
+                              d3.select("#totalRatioB").text(Number(rb).toFixed(2))
+                              }
                       
+                            buildPlayground(svg, dataPGA, dataPGB, graphicalData)
                           updateFigure(d3.select("#figPlayground"), dataPGA, dataPGB)
+                          updateParadox(dataPGA, dataPGB)
+                          updateTotalRatio(dataPGA, dataPGB)
                       
                             // set sliders to initial data
                             var slider1 = document.getElementById("rangeRatioA1");
@@ -463,6 +481,8 @@ var dataPGA_actually = {Nx: 1, Ny: 1, Nx11: 0.95, Nx12: 0.05, Nx21: 0.75, Nx22: 
                               d3.select("#indicator1").text(Number(this.value/100).toFixed(2))
                               
                               updateFigure(d3.select("#figPlayground"), dataPGA, dataPGB);
+                          updateParadox(dataPGA, dataPGB)
+                          updateTotalRatio(dataPGA, dataPGB)
                               
                       
                             } 
@@ -474,6 +494,8 @@ var dataPGA_actually = {Nx: 1, Ny: 1, Nx11: 0.95, Nx12: 0.05, Nx21: 0.75, Nx22: 
                               d3.select("#indicator2").text(Number(this.value/100).toFixed(2))
                               
                               updateFigure(d3.select("#figPlayground"), dataPGA, dataPGB);
+                          updateParadox(dataPGA, dataPGB)
+                          updateTotalRatio(dataPGA, dataPGB)
                               
                               
                             } 
@@ -485,6 +507,8 @@ var dataPGA_actually = {Nx: 1, Ny: 1, Nx11: 0.95, Nx12: 0.05, Nx21: 0.75, Nx22: 
                               d3.select("#indicator3").text(Number(this.value/100).toFixed(2))
                               
                               updateFigure(d3.select("#figPlayground"), dataPGA, dataPGB);
+                          updateParadox(dataPGA, dataPGB)
+                          updateTotalRatio(dataPGA, dataPGB)
                             }      
                       
                             slider4.oninput = function() {
@@ -494,6 +518,8 @@ var dataPGA_actually = {Nx: 1, Ny: 1, Nx11: 0.95, Nx12: 0.05, Nx21: 0.75, Nx22: 
                               d3.select("#indicator4").text(Number(this.value/100).toFixed(2))
                       
                               updateFigure(d3.select("#figPlayground"), dataPGA, dataPGB);
+                          updateParadox(dataPGA, dataPGB)
+                          updateTotalRatio(dataPGA, dataPGB)
                               
                              
                             } 
@@ -505,6 +531,8 @@ var dataPGA_actually = {Nx: 1, Ny: 1, Nx11: 0.95, Nx12: 0.05, Nx21: 0.75, Nx22: 
                               d3.select("#indicator5").text(Number(this.value/100).toFixed(2))
                       
                               updateFigure(d3.select("#figPlayground"), dataPGA, dataPGB);
+                          updateParadox(dataPGA, dataPGB)
+                          updateTotalRatio(dataPGA, dataPGB)
                               
                             } 
                       
@@ -515,6 +543,8 @@ var dataPGA_actually = {Nx: 1, Ny: 1, Nx11: 0.95, Nx12: 0.05, Nx21: 0.75, Nx22: 
                               d3.select("#indicator6").text(Number(this.value/100).toFixed(2))
                       
                               updateFigure(d3.select("#figPlayground"), dataPGA, dataPGB);
+                          updateParadox(dataPGA, dataPGB)
+                          updateTotalRatio(dataPGA, dataPGB)
                             } 
                       
                       
