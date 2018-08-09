@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<!--<script src="https://distill.pub/template.v1.js"></script>-->
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,900" rel="stylesheet"> 
+  <link href="https://fonts.googleapis.com/css?family=Karla:400,700" rel="stylesheet"> 
+  <style>
+    body {font-family: 'Karla', sans-serif;
+      margin-left: 60px;}
+    img { 
+        border: "3";
+    }
+  h1 {font-family: 'Roboto', bold}
+  h2 {font-family: 'Roboto'}
+  body {width: 1200px;}
+  .slider {width: 100px;}
+  .column {
+              float: left;
+              width: 50%;
+          }
+          
+  /* Clear floats after the columns */
+  .row:after {
+      content: "";
+      display: table;
+      clear: both;
+  }
+  text {
+      text-anchor: "center";
+  }
+</style>
+<script src="https://d3js.org/d3.v5.js"></script>
+<script src="buildFigure.js"></script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+
+    <script>    
+    var dataA_old = {Nx: 60, Ny: 24, Nx11: 54, Nx12: 6, Nx21: 42, Nx22: 18, Ny1: 8, Ny2: 16};
+    var dataA = {Nx: 20, Ny: 12, Nx11: 18, Nx12: 2, Nx21: 14, Nx22: 6, Ny1: 4, Ny2: 8};
+    var dataB_old = {Nx: 60, Ny: 24, Nx11: 51, Nx12: 9, Nx21: 39, Nx22: 21, Ny1: 20, Ny2: 4};
+    var dataB = {Nx: 20, Ny: 12, Nx11: 17, Nx12: 3, Nx21: 13, Nx22: 7, Ny1: 10, Ny2: 2};
+                        var scale = 20
+                        var paddingBar = 60
+    </script>
+
+<script type="text/front-matter">
+  title: "Article Title"
+  description: "Article description"
+  authors:
+  - Philipp Wacker:
+  affiliations:
+  - Friedrich-Alexander-Universität Erlangen-Nürnberg
+</script>
+<style>
+    text {font-size: 12pt}
+    div.tooltip {	
+    position: absolute;			
+    text-align: center;			
+    width: 60px;					
+    height: 28px;					
+    padding: 2px;				
+    font: 12px sans-serif;		
+    background: lightsteelblue;	
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;	}
+    table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+</style>
+    <body>
+        
+                  <h1>Simpson's paradox</h1>
+                  <p>Imagine seeing your doctor and the following dialogue ensues:</p> <br>
+                  <figure>
+                    <img src="comic/P1.jpg" width="800" border="3" hspace="50"><br>
+                    <img src="comic/P2.jpg" width="800" border="3" hspace="50"><br>
+                    <img src="comic/P3.jpg" width="800" border="3" hspace="50"><br>
+                    <img src="comic/P4.jpg" width="800" border="3" hspace="50"></figure>
+                    <hr>
+                    <h2>Wat?</h2>
+                    <p>So, Simpson's paradox is essentially the (apparent) contradiction between two tables. We have the following success rates of treating kidney stones with two different treatment methods.</p>
+                    <figure>
+                    <table style="width:600px">
+                      <caption>Table 1. Success rate of treatment A and B.</caption>
+                      <tr>
+                        <th>success rate</th>
+                        <th>treatment A</th>
+                        <th>treatment B</th>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td>76.7%</td>
+                        <td bgcolor="#00DD00">81.7%</td>
+                      </tr>
+                    </table></figure>
+                    <p>but after creating subcategories "patients having small kidney stones" and "patients having large kidney stones" (with every patients being in either one), we get</p>
+                    <figure><table style="width:600px">
+                      <caption>Table 2. Treatment success rate for each subcategory.</caption>
+                      <tr>
+                        <th>success rate</th>
+                        <th>treatment A</th>
+                        <th>treatment B</th>
+                      </tr>
+                      <tr>
+                        <td>small stones</td>
+                        <td bgcolor="#00DD00">90%</td>
+                        <td>85%</td>
+                      </tr>
+                      <tr>
+                        <td>large stones</td>
+                        <td bgcolor="#00DD00">70%</td>
+                        <td>65%</td>
+                      </tr>
+                    </table> 
+                    </figure>
+                    <p>In this short explanation we will try to answer the following questions.</p>
+                    <ol>
+                      <li>How can treatment A be better than treatment B for every subcategory, with treatment B being better overall?</li>
+                      <li>Which treatment is now actually better? I.e. should we trust table 1 or table 2?</li>
+                    </ol>
+                  <hr>
+                
+                  <h2>A visual explanation of Simpson's paradox</h2>
+                  <p>
+                    We start by looking at some patients like a hospital manager would: Featureless objects lacking personality and history. We even abstract away gender, age and their ice cream preferences.
+                  </p>
+                  <p>Keep in mind: Every white square is exactly one patient.</p>
+                  <figure>
+                  <svg id="patients" width=600 height=300 style="background: grey">
+                  </svg></figure>
+                  <script>
+                    var N = 100
+                    var svg = d3.select("#patients")
+                    lst = []
+                    for (var i=0; i<N; i++) {
+                      lst.push([Math.random()*(600-2*scale) + scale, Math.random()*(300-2*scale) + scale]);
+
+                    }
+
+                    svg.selectAll("rect").data(lst).enter()
+                      .append("rect")
+                      .attr("x", function(d){return d[0];})
+                      .attr("y", function(d){return d[1];})
+                      .attr("width", scale).attr("height", scale)
+                      .attr("fill", "white")
+                      .attr("stroke", "black")
+                    </script>
+                    <hr>
+                    <h2>Getting to know our patients</h2>
+                  <p>
+                    For each treatment A and B we consider 240 patients subjected to it. We arrange them nicely in a rectangle 12 by 20, like so:
+                  </p>
+                  <figure><svg id="figWhole" style="background: grey", style="stroke: black">
+                  </svg></figure>
+                  <script>//
+                      var labelAll = dataA.Nx + " * " + dataA.Ny + " = " + dataA.Nx*dataA.Ny + " patients";
+                      var labelDataA = {labelUpper: ["patients", "hidden"], labelLower: ["patients", "hidden"], labelUpperLeft: [labelAll, "hidden"], labelUpperRight: [labelAll, "hidden"], labelLowerLeft: [labelAll, "hidden"], labelLowerRight: [labelAll, "hidden"]};
+                      var labelDataB = {labelUpper: ["patients", "hidden"], labelLower: ["patients", "hidden"], labelUpperLeft: [labelAll, "hidden"], labelUpperRight: [labelAll, "hidden"], labelLowerLeft: [labelAll, "hidden"], labelLowerRight: [labelAll, "hidden"]};
+                        
+                        var graphicalDataA = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataA};
+                        var graphicalDataB = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataB};
+                        var paddingBlocks = 5 // padding between W and M block
+                                                
+                        buildFigure(d3.select("#figWhole"), dataA, dataA, graphicalDataA, graphicalDataB)
+                        
+                        
+                    </script>
+                    <hr>
+                    <h2>Large and small kidney stones</h2>
+                    <p>
+                      Now we need to differentiate between small and large kidney stones. We use yellow for patients with <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones and 
+                        blue for <span style="background-color: rgb(0, 163, 255)">large</span> ones.
+                        </p>
+                        
+                        <p>
+                        
+                    </p>
+                    <figure id="fig_figSepGender"><svg id="figSepGender" onclick="clickFigSepGender()" style="background: grey">
+                        </svg></figure>
+                        <div>
+                        <ul>
+                            <li id="item1" onmouseover="mouseover1()" onmouseleave="mouseleave1()">Among patients treated with treatment A, there were more patients with <span style="background-color: rgb(0, 163, 255)">large</span> 
+                              kidney stones than those with <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones </li>
+                            <li id="item2"  onmouseover="mouseover2()" onmouseleave="mouseleave2()">Among patients treated with treatment B, there were more patients with <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones 
+                              than those with <span style="background-color: rgb(0, 163, 255)">small</span> kidney stones</span></li>
+                          </ul></div>
+                          <script>
+                          var mouseover1 = function()
+                            {
+                                var svg = d3.select("#figSepGender")
+                                console.log("1")
+                                svg.select("#groupRight").attr("opacity", 0.15)                
+                                document.getElementById("item1").style = "background-color: green"
+                            }
+                            var mouseleave1 = function()
+                            {
+                                var svg = d3.select("#figSepGender")
+                                svg.select("#groupRight").attr("opacity", 1)                              
+                                document.getElementById("item1").style = "background-color: white"
+                            }
+                            var mouseover2 = function()
+                            {
+                                var svg = d3.select("#figSepGender")
+                                svg.select("#groupLeft").attr("opacity", 0.15)                
+                                document.getElementById("item2").style = "background-color: green"
+                            }
+                            var mouseleave2 = function()
+                            {
+                                var svg = d3.select("#figSepGender")
+                                svg.select("#groupLeft").attr("opacity", 1)                              
+                                document.getElementById("item2").style = "background-color: white"
+                            }
+                            </script>
+                        <script>//
+                              var newColors = [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)];
+                              var labelAUpper = dataA.Nx + " * " + dataA.Ny1 + " = " + dataA.Nx*dataA.Ny1 + " patients with small kidney stones were treated with treatment A";
+                              var labelBUpper = dataB.Nx + " * " + dataB.Ny1 + " = " + dataB.Nx*dataB.Ny1 + " patients with small kidney stones were treated with treatment B";
+                              var labelALower = dataA.Nx + " * " + dataA.Ny2 + " = " + dataA.Nx*dataA.Ny2 + " patients with large kidney stones were treated with treatment A";
+                              var labelBLower = dataB.Nx + " * " + dataB.Ny2 + " = " + dataB.Nx*dataB.Ny2 + " patients with large kidney stones were treated with treatment B";
+                              var labelDataA = {labelUpper: ["small stones", "hidden"], labelLower: ["large stones", "hidden"], labelUpperLeft: [labelAUpper, "hidden"], labelUpperRight: [labelAUpper, "hidden"], labelLowerLeft: [labelALower, "hidden"], labelLowerRight: [labelALower, "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment A with small kidney stones", labelRatioBarSideBottom: "Ratio of patients under treatment A with large kidney stones"};
+                              var labelDataB = {labelUpper: ["small stones", "hidden"], labelLower: ["large stones", "hidden"], labelUpperLeft: [labelBUpper, "hidden"], labelUpperRight: [labelBUpper, "hidden"], labelLowerLeft: [labelBLower, "hidden"], labelLowerRight: [labelBLower, "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment B with small kidney stones", labelRatioBarSideBottom: "Ratio of patients under treatment B with large kidney stones"};
+                              var graphicalDataA = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataA};
+                              var graphicalDataB = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataB};
+
+                                    
+                              buildFigure(d3.select("#figSepGender"), dataA, dataB, graphicalDataA, graphicalDataB, paddingBlocks, paddingBar)
+
+                              var clickFigSepGender = function()
+                              {
+                                var groupLeft = d3.select("#figSepGender").select("#groupLeft");
+                                var groupRight = d3.select("#figSepGender").select("#groupRight");
+                                for (var g of [groupLeft, groupRight])
+                                {
+                                  g.select("#ratioBarSideTop").attr("fill", newColors[0])
+                                  g.select("#ratioBarSideBottom").attr("fill", newColors[2])
+                                
+                                
+                                g.selectAll(".labelNy_sub").attr("visibility", "visible")
+                                g.select("#labelNy").attr("visibility", "hidden")
+
+                                g.selectAll(".ratioBarSide").attr("opacity", 0.0)   
+                                g.selectAll(".ratioBarSide").attr("visibility", "visible") 
+
+                                g.selectAll(".ratioBarSide").transition().duration(1000).ease(d3.easeLinear).attr("opacity", 1.0)                                
+                                
+
+                                g.select("#upperleft").select("#backgroundUL").transition().duration(1000).ease(d3.easeLinear).attr("fill", newColors[0])
+                                g.select("#upperright").select("#backgroundUR").transition().duration(1000).ease(d3.easeLinear).attr("fill", newColors[0])
+                                g.select("#lowerleft").select("#backgroundLL").transition().duration(1000).ease(d3.easeLinear).attr("fill", newColors[2])
+                                g.select("#lowerright").select("#backgroundLR").transition().duration(1000).ease(d3.easeLinear).attr("fill", newColors[2])
+
+                                // make group labels visible (i.e. "small stones" and "large stones")
+                                g.select("#upperleft").select("text").attr("visibility", "visible")
+                                g.select("#lowerleft").select("text").attr("visibility", "visible")
+                                }
+
+
+                              }
+                          
+                          </script>
+                          <hr>
+                          <h2>Treatment success rates</h2>
+                    <p>Now we need to look at the success rates of the treatments in each of those four subgroups.  </p>
+                    
+                    <script>
+                      var mouseover12 = function()
+                      {
+                          var svg = d3.select("#figAllCategories")
+                          svg.selectAll("#upperleft").attr("opacity", 0.15)                          
+                          svg.selectAll("#upperright").attr("opacity", 0.15)
+                          svg.selectAll("#lowerleft").attr("opacity", 0.15)
+                          svg.selectAll("#lowerright").attr("opacity", 0.15)
+                          svg.selectAll(".ratioBarBottom").attr("opacity", 0.15)
+                          svg.selectAll(".ratioBarSide").attr("opacity", 0.15)
+                          document.getElementById("item12").style = "background-color: green"
+                      }
+                      var mouseleave12 = function()
+                      {
+                          var svg = d3.select("#figAllCategories")
+                          svg.selectAll("#upperleft").attr("opacity", 1)                          
+                          svg.selectAll("#upperright").attr("opacity", 1)
+                          svg.selectAll("#lowerleft").attr("opacity", 1)
+                          svg.selectAll("#lowerright").attr("opacity", 1)
+                          svg.selectAll(".ratioBarBottom").attr("opacity", 1)
+                          svg.selectAll(".ratioBarSide").attr("opacity", 1)
+                          document.getElementById("item12").style = "background-color: white"
+                      }
+                      var mouseover22 = function()
+                      {
+                          var svg = d3.select("#figAllCategories")
+                          svg.selectAll("#upperleft").attr("opacity", 0.15)                          
+                          svg.selectAll("#upperright").attr("opacity", 0.15)
+                          svg.selectAll("#lowerleft").attr("opacity", 0.15)
+                          svg.selectAll("#lowerright").attr("opacity", 0.15)
+                          svg.selectAll(".ratioBarTop").attr("opacity", 0.15)
+                          svg.selectAll(".ratioBarSide").attr("opacity", 0.15)
+                          document.getElementById("item22").style = "background-color: green"
+                      }
+                      var mouseleave22 = function()
+                      {
+                          var svg = d3.select("#figAllCategories")
+                          svg.selectAll("#upperleft").attr("opacity", 1)                          
+                          svg.selectAll("#upperright").attr("opacity", 1)
+                          svg.selectAll("#lowerleft").attr("opacity", 1)
+                          svg.selectAll("#lowerright").attr("opacity", 1)
+                          svg.selectAll(".ratioBarTop").attr("opacity", 1)
+                          svg.selectAll(".ratioBarSide").attr("opacity", 1)
+                          document.getElementById("item22").style = "background-color: white"
+                      }
+                      var mouseover32 = function()
+                      {
+                          var svg = d3.select("#figAllCategories")
+                          //svg.selectAll("#upperleft").attr("opacity", 0.15)                          
+                          svg.selectAll("#upperright").attr("opacity", 0.15)
+                          //svg.selectAll("#lowerleft").attr("opacity", 0.15)
+                          svg.selectAll("#lowerright").attr("opacity", 0.15)
+                          svg.selectAll(".ratioBarTop").attr("opacity", 0.15)
+                          svg.selectAll(".ratioBarBottom").attr("opacity", 0.15)
+                          svg.selectAll(".ratioBarSide").attr("opacity", 0.15)
+                          document.getElementById("item32").style = "background-color: green"
+                      }
+                      var mouseleave32 = function()
+                      {
+                          var svg = d3.select("#figAllCategories")
+                          //svg.selectAll("#upperleft").attr("opacity", 1)                          
+                          svg.selectAll("#upperright").attr("opacity", 1)
+                          //svg.selectAll("#lowerleft").attr("opacity", 1)
+                          svg.selectAll("#lowerright").attr("opacity", 1)
+                          svg.selectAll(".ratioBarTop").attr("opacity", 1)
+                          svg.selectAll(".ratioBarBottom").attr("opacity", 1)
+                          svg.selectAll(".ratioBarSide").attr("opacity", 1)
+                          document.getElementById("item32").style = "background-color: white"
+                      }
+                      </script>
+                    
+                    <figure id="fig_figAllCategories"><svg onclick="clickFigAllCategories()" id="figAllCategories" style="background: grey">
+                    
+                    </svg></figure>
+                    <div visibility="hidden"><p>We can see the following things (hover over items to see effects):</p>
+                      <ul>
+                        <li id="item12" onmouseover="mouseover12()" onmouseleave="mouseleave12()">Treatment A has a better success rate for <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones. </li>
+                        <li id="item22"  onmouseover="mouseover22()" onmouseleave="mouseleave22()">Treatment A has a better success rate for <span style="background-color: rgb(0, 163, 255)">large</span> kidney stones. </li>
+                        <li id="item32"  onmouseover="mouseover32()" onmouseleave="mouseleave32()">Treatment B has a better success rate overall: The number of patients successfully treated by treatment A is lower than the
+                          corresponding number for treatment B.
+                        </li>
+                      </ul>
+                      
+                      <p> This is what constitutes Simpson's paradox: Although the success rates in each subpopulation are better for treatment A, the combined success rate is better for treatment B.
+                         
+                      </p>
+                      <hr>
+                      <h2>Explanation in words</h2>
+                      <p>We can think about this paradox in the following way. Try to match each bullet point with the according graphical representation.</p>
+                      <ol> 
+                        <li>Treatment A is really the better method: For both small and large kidney stones it has a higher success rate.</li>
+                        <li>For some reason, surgeons picked treatment A for <i>hard</i> cases, i.e. large kidney stones (note that large kidney stones always have lower remedy rates than small stones, regardless of
+                        the treatment type used). Thus, the patients treated by method A were typically of the harder-to-cure large-stone-variety with a success rate of 70%. The smaller number of 
+                        small-stone patients does not carry a lot of weight.</li>
+                        <li>Similarly, in the <i>easy</i> case of small kidney stones, surgeons typically picked treatment B. Thus, patients treated by method B were most likely of the 
+                          easily-treated small-stone type with a success rate of 85%. The smaller number of large-stone patients is almost negligible.</li>
+                        <li>In conclusion: <i>Treatment B is worse for each individual patient</i>. But: Treatment B was mostly used on easier cases and hence seems more successful. </li>
+                      </ol>
+                      <p>We can now revisit our original question and answer them:</p>
+                      <ol>
+                        <li>How can treatment A be better than treatment B for every subcategory, with treatment B being better overall? <b>This is due too a bias in the selection of treatment 
+                          for a given kidney stone size.
+                        </b></li>
+                        <li>Which treatment is now actually better? I.e. should we trust table 1 or table 2? <b>Treatment A is better because for each individual patient (having a 
+                          well-defined kidney stone size), treatment A has better chances of success.
+                        </b></li>
+                      </ol>
+                    </div>
+                    <script>//
+                    var newColors = [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)];
+                    //var labelDataA = {labelUpper: ["small stones", "visible"], labelLower: ["large stones", "visible"], labelUpperLeft: ["small stones (successfully treated)", "hidden"], labelUpperRight: ["small stones \n(treated without success)", "hidden"], labelLowerLeft: ["large stones (successfully treated)", "hidden"], labelLowerRight: ["large stones (treated without success)", "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment A with small kidney stones", labelRatioSideBottom: "Ratio of patients under treatment A with large kidney stones", labelRatioBarRightTop: "Ratio of patients under treatment B with small kidney stones", labelRatioBarRightBottom: "Ratio of patients under treatment B with large kidney stones"};
+                          
+
+                          var labelAUpperLeft = dataA.Nx11 + "*" + dataA.Ny1 + " = " + (dataA.Nx11)*dataA.Ny1 + " patients with small kidney stones were successfully treated with treatment A";
+                          var labelAUpperRight = dataA.Nx12 + "*" + dataA.Ny1 + " = " + (dataA.Nx12)*dataA.Ny1 + " patients with small kidney stones were unsuccessfully treated with treatment A";
+                          var labelALowerLeft = dataA.Nx21 + "*" + dataA.Ny2 + " = " + (dataA.Nx21)*dataA.Ny2 + " patients with small kidney stones were successfully treated with treatment A";
+                          var labelALowerRight = dataA.Nx22 + "*" + dataA.Ny2 + " = " + (dataA.Nx22)*dataA.Ny2 + " patients with small kidney stones were unsuccessfully treated with treatment A";
+                          var labelBUpperLeft = dataB.Nx11 + "*" + dataB.Ny1 + " = " + (dataB.Nx11)*dataB.Ny1 + " patients with small kidney stones were successfully treated with treatment B";
+                          var labelBUpperRight = dataB.Nx12 + "*" + dataB.Ny1 + " = " + (dataB.Nx12)*dataB.Ny1 + " patients with small kidney stones were unsuccessfully treated with treatment B";
+                          var labelBLowerLeft = dataB.Nx21 + "*" + dataB.Ny2 + " = " + (dataB.Nx21)*dataB.Ny2 + " patients with small kidney stones were successfully treated with treatment B";
+                          var labelBLowerRight = dataB.Nx22 + "*" + dataB.Ny2 + " = " + (dataB.Nx22)*dataB.Ny2 + " patients with small kidney stones were unsuccessfully treated with treatment B";
+                          var labelDataA = {labelUpper: ["small stones", "visible"], labelLower: ["large stones", "visible"], labelUpperLeft: [labelAUpperLeft, "hidden"], labelUpperRight: [labelAUpperRight, "hidden"], labelLowerLeft: [labelALowerLeft, "hidden"], labelLowerRight: [labelALowerRight, "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment A with small kidney stones", labelRatioBarSideBottom: "Ratio of patients under treatment A with large kidney stones"};
+                          var labelDataB = {labelUpper: ["small stones", "visible"], labelLower: ["large stones", "visible"], labelUpperLeft: [labelBUpperLeft, "hidden"], labelUpperRight: [labelBUpperRight, "hidden"], labelLowerLeft: [labelBLowerLeft, "hidden"], labelLowerRight: [labelBLowerRight, "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment B with small kidney stones", labelRatioBarSideBottom: "Ratio of patients under treatment B with large kidney stones"};
+                              
+                          var graphicalDataA = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 80, 75), d3.hcl(250, 80, 60), d3.hcl(250, 80, 60)], subdivideVert: true, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataA};
+                          var graphicalDataB = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 80, 75), d3.hcl(250, 80, 60), d3.hcl(250, 80, 60)], subdivideVert: true, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataB};
+                          var paddingBlocks = 5 // padding between W and M block
+                                                  
+                          buildFigure(d3.select("#figAllCategories"), dataA, dataB, graphicalDataA, graphicalDataB, paddingBlocks, paddingBar)
+
+                          // block for mouseover action
+                          var svg = d3.select("#figAllCategories")
+                          var posUpperRatioBar = svg.select("#groupLeft").select("#leftestRatioBarTop").node().getBoundingClientRect()
+
+                          // svg.select("#groupLeft").append("circle")
+                          //   .attr("cx", posUpperRatioBar.x)
+                          //   .attr("cy", posUpperRatioBar.y)
+                          //   .attr("r", 40)
+                          //   .attr("fill", "black")
+                          
+                          var groupLeft = d3.select("#figAllCategories").select("#groupLeft")
+                          var groupRight = d3.select("#figAllCategories").select("#groupRight");
+
+                            var clickFigAllCategories = function()
+                              {
+                                var groupLeft = d3.select("#figAllCategories").select("#groupLeft")
+                                var groupRight = d3.select("#figAllCategories").select("#groupRight");
+                                for (var g of [groupLeft, groupRight])
+                                {
+                                g.select("#ratioBarTopLeft").attr("fill", newColors[0])
+                                g.select("#ratioBarBottomLeft").attr("fill", newColors[2])
+                                g.select("#ratioBarTopRight").attr("fill", newColors[1])
+                                g.select("#ratioBarBottomRight").attr("fill", newColors[3])
+                                
+                                g.selectAll(".labelNx_sub").attr("visibility", "visible")
+                                g.select("#labelNx").attr("visibility", "hidden")
+
+                                g.selectAll(".ratioBarTop").attr("opacity", 0.0)   
+                                g.selectAll(".ratioBarTop").attr("visibility", "visible") 
+                                g.selectAll(".ratioBarBottom").attr("opacity", 0.0)   
+                                g.selectAll(".ratioBarBottom").attr("visibility", "visible") 
+                                g.selectAll(".ratioBarTop").transition().duration(1000).ease(d3.easeLinear).attr("opacity", 1.0)
+                                g.selectAll(".ratioBarBottom").transition().duration(1000).ease(d3.easeLinear).attr("opacity", 1.0)
+
+                                g.select("#upperleft").select("#backgroundUL").transition().duration(1000).ease(d3.easeLinear).attr("fill", newColors[0])
+                                g.select("#upperright").select("#backgroundUR").transition().duration(1000).ease(d3.easeLinear).attr("fill", newColors[1])
+                                g.select("#lowerleft").select("#backgroundLL").transition().duration(1000).ease(d3.easeLinear).attr("fill", newColors[2])
+                                g.select("#lowerright").select("#backgroundLR").transition().duration(1000).ease(d3.easeLinear).attr("fill", newColors[3])
+
+                                // make group labels visible (i.e. "small stones" and "large stones")
+                                /*g.select("#upperleft").select("#labelU").attr("visibility", "hidden")
+                                g.select("#upperleft").select("#labelUL").attr("visibility", "visible")
+                                g.select("#upperright").select("#labelUR").attr("visibility", "visible")
+                                g.select("#lowerleft").select("#labelL").attr("visibility", "hidden")
+                                g.select("#lowerleft").select("#labelLL").attr("visibility", "visible")
+                                g.select("#lowerright").select("#labelLR").attr("visibility", "visible")*/
+                                }
+
+                              }
+                      </script>
+                      <hr>
+                      <h2>Exploring Simpson's paradox: Should I wear a life vest?</h2>
+
+
+                      
+                      <p>A study found that sailors who went overboard were more likely to be rescued if they were wearing <emph>no</emph> life vest. The reason for that is that there is a
+                           hidden variable, "weather", which is unaccounted for in this analysis. In both good and bad weather, the probability of rescue was higher for sailors wearing a life jacket than for those not
+                          wearing a life jacket.  </p>
+                          <p>We have fixed the rescue probabilities with and without life vest for good and bad weather, so you have only two parameters to fiddle with: The fraction of sailors donning a life jacket in 
+                              good resp. bad weather. <b>Try to choose those parameters in such a way that the compound ratio of sailors saved without life vests is actually lower than for those with life vests.</b>
+                          </p>
+                      
+                      <div class="row">
+                          <div class="column">
+                              <table>
+                              <tr>
+                                      <td>Fraction of sailors donning life vest in good weather</td>
+                                      <td><input type="range" min="0" max="100" value="50" step="0.01" class="slider" id="rangeRatioA1"></td>
+                                      <td><span id="indicator1"></span></td>
+                              </tr>
+                              <tr>
+                                      <td>Rescue probability with life vest in good weather</td>
+                                      <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccA1" style="background-color:  #d3d3d3" disabled="true"></td>
+                                      <td><span id="indicator3"></span></td>
+                              </tr>
+                              <tr>
+                                      <td>Rescue probability with life vest in bad weather</td>
+                                      <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccA2" style="background-color:  #d3d3d3" disabled="true"></td>
+                                      <td><span id="indicator4"></span></td>
+                              </tr>
+                          </table>
+                          </div>
+                          <div class="column">
+                                  <table>
+                                          <tr>
+                                                  <td>Fraction of sailors donning life vest in bad weather</td>
+                                                  <td><input type="range" min="0" max="100" width="20px" value="50" class="slider" id="rangeRatioB1"></td>
+                                                  <td><span id="indicator2"></span></td>
+                                          </tr>
+                                          <tr>
+                                                  <td>Rescue probability without life vest in good weather</td>
+                                                  <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccB1" style="background-color:  #d3d3d3" disabled="true"></td>
+                                                  <td><span id="indicator5"></span></td>
+                                          </tr>
+                                          <tr>
+                                                  <td>Rescue probability without life vest in bad weather</td>
+                                                  <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccB2" style="background-color:  #d3d3d3" disabled="true"></td>
+                                                  <td><span id="indicator6"></span></td>
+                                          </tr>
+                                      </table>
+                          </div>
+                        </div> 
+                        
+                      <figure>
+                      <svg id="figPlayground" onclick="" style="background: grey">    <!--viewBox="-70 -70 1200 350">-->
+                          <g id="giantGroup">
+                        <g id="groupLeft">      
+                          <text id="labelGood"></text>
+                          <text id="labelBad"></text>
+                            <text id="title">life vest</text>
+                        <rect id="rect1" width = 540 height=80 fill="white" stroke="black" ></rect>
+                        <text id="text1" text-anchor="middle" dy="0.5em"></text>
+                        <rect id="rect2" x=540 width=60 height=80 fill="white" stroke="black"></rect>
+                        <text id="text2" text-anchor="middle"></text>
+                        <rect id="rect3" y=80 width=420 height=160 fill="white" stroke="black"></rect>
+                        <text id="text3" text-anchor="middle"></text>
+                        <rect id="rect4" y=80 x= 420 width=180 height=160 fill="white" stroke="black"></rect>
+                        <text id="text4" text-anchor="middle"></text>
+                        <g id="ratioBarTop">
+                            <g id="left"></g>
+                            <g id="right"></g>
+                        </g>
+                        <g id="ratioBarBottom">
+                              <g id="left"></g>
+                              <g id="right"></g>
+                          </g>
+                        <g id="ratioBarSide">
+                              <g id="top"></g>
+                              <g id="bottom"></g>
+                          </g>
+                      </g>
+                      <g id="groupRight">     
+                          <text id="labelGood"></text>
+                          <text id="labelBad"></text> 
+                              <text id="title">no life vest</text>
+                              <rect id="rect1" width = 540 height=80 fill="white" stroke="black" ></rect>
+                              <text id="text1" text-anchor="middle"></text>
+                              <rect id="rect2" x=540 width=60 height=80 fill="white" stroke="black"></rect>
+                              <text id="text2" text-anchor="middle"></text>
+                              <rect id="rect3" y=80 width=420 height=160 fill="white" stroke="black"></rect>
+                              <text id="text3" text-anchor="middle"></text>
+                              <rect id="rect4" y=80 x= 420 width=180 height=160 fill="white" stroke="black"></rect>
+                              <text id="text4" text-anchor="middle"></text>
+                              <g id="ratioBarTop">
+                                      <g id="left"></g>
+                                      <g id="right"></g>
+                                  </g>
+                              <g id="ratioBarBottom">
+                                      <g id="left"></g>
+                                      <g id="right"></g>
+                                  </g>
+                              <g id="ratioBarSide">
+                                      <g id="top"></g>
+                                      <g id="bottom"></g>
+                                  </g>
+                            </g>
+                          </g>
+                      </svg></figure>
+                      <br/>
+                      <span>total rescue probability with life vest:</span>
+                      <span id="totalRatioA"></span>
+                      <br/>
+                      <span>total rescue probability without life vest:</span>
+                      <span id="totalRatioB"></span>
+                      <br/>
+                      <span>Paradox:</span>
+                      <span id="p_paradox"></span>
+                      <p id="explanation"></p>
+                      <script src="playground.js"></script>
+
+                
+<hr>
+ <div class="row">
+                          <div class="column">
+                              <table>
+                              <tr>
+                                      <td>Fraction of sailors donning life vest in good weather</td>
+                                      <td><input type="range" min="0" max="100" value="50" step="0.01" class="slider" id="rangeRatioA1_general"></td>
+                                      <td><span id="indicator1_general"></span></td>
+                              </tr>
+                              <tr>
+                                      <td>Rescue probability with life vest in good weather</td>
+                                      <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccA1_general"></td>
+                                      <td><span id="indicator3_general"></span></td>
+                              </tr>
+                              <tr>
+                                      <td>Rescue probability with life vest in bad weather</td>
+                                      <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccA2_general"></td>
+                                      <td><span id="indicator4_general"></span></td>
+                              </tr>
+                          </table>
+                          </div>
+                          <div class="column">
+                                  <table>
+                                          <tr>
+                                                  <td>Fraction of sailors donning life vest in bad weather</td>
+                                                  <td><input type="range" min="0" max="100" width="20px" value="50" class="slider" id="rangeRatioB1_general"></td>
+                                                  <td><span id="indicator2_general"></span></td>
+                                          </tr>
+                                          <tr>
+                                                  <td>Rescue probability without life vest in good weather</td>
+                                                  <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccB1_general"></td>
+                                                  <td><span id="indicator5_general"></span></td>
+                                          </tr>
+                                          <tr>
+                                                  <td>Rescue probability without life vest in bad weather</td>
+                                                  <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccB2_general"></td>
+                                                  <td><span id="indicator6_general"></span></td>
+                                          </tr>
+                                      </table>
+                          </div>
+                        </div> 
+                        
+                      <figure>
+                      <svg id="figPlayground_general" onclick="" style="background: grey">    <!--viewBox="-70 -70 1200 350">-->
+                          <g id="giantGroup">
+                        <g id="groupLeft">      
+                            <image id="bg_img"></image> 
+                          <text id="labelGood"></text>
+                          <text id="labelBad"></text>
+                            <text id="title">life vest</text>
+                        <rect id="rect1" width = 540 height=80 fill="white" stroke="black" ></rect>
+                        <text id="text1" text-anchor="middle" dy="0.5em"></text>
+                        <rect id="rect2" x=540 width=60 height=80 fill="white" stroke="black"></rect>
+                        <text id="text2" text-anchor="middle"></text>
+                        <rect id="rect3" y=80 width=420 height=160 fill="white" stroke="black"></rect>
+                        <text id="text3" text-anchor="middle"></text>
+                        <rect id="rect4" y=80 x= 420 width=180 height=160 fill="white" stroke="black"></rect>
+                        <text id="text4" text-anchor="middle"></text>
+                        <g id="ratioBarTop">
+                            <g id="left"></g>
+                            <g id="right"></g>
+                        </g>
+                        <g id="ratioBarBottom">
+                              <g id="left"></g>
+                              <g id="right"></g>
+                          </g>
+                        <g id="ratioBarSide">
+                              <g id="top"></g>
+                              <g id="bottom"></g>
+                          </g>
+                      </g>
+                      <g id="groupRight">    
+                          <image id="bg_img"></image> 
+                          <text id="labelGood"></text>
+                          <text id="labelBad"></text> 
+                              <text id="title">no life vest</text>
+                              <rect id="rect1" width = 540 height=80 fill="white" stroke="black" ></rect>
+                              <text id="text1" text-anchor="middle"></text>
+                              <rect id="rect2" x=540 width=60 height=80 fill="white" stroke="black"></rect>
+                              <text id="text2" text-anchor="middle"></text>
+                              <rect id="rect3" y=80 width=420 height=160 fill="white" stroke="black"></rect>
+                              <text id="text3" text-anchor="middle"></text>
+                              <rect id="rect4" y=80 x= 420 width=180 height=160 fill="white" stroke="black"></rect>
+                              <text id="text4" text-anchor="middle"></text>
+                              <g id="ratioBarTop">
+                                      <g id="left"></g>
+                                      <g id="right"></g>
+                                  </g>
+                              <g id="ratioBarBottom">
+                                      <g id="left"></g>
+                                      <g id="right"></g>
+                                  </g>
+                              <g id="ratioBarSide">
+                                      <g id="top"></g>
+                                      <g id="bottom"></g>
+                                  </g>
+                            </g>
+                          </g>
+                      </svg></figure>
+                      <script src="playground_general.js"></script>
+
+<!--// activate animations if elements come into view-->
+                      
+<script>
+function isElementInViewport (el) {
+
+  //special bonus for those using jQuery
+  if (typeof jQuery === "function" && el instanceof jQuery) {
+      el = el[0];
+  }
+
+  var rect = el.getBoundingClientRect();
+
+  return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+  );
+}
+
+function onVisibilityChange(el, callback) {
+  var old_visible;
+  return function () {
+      var visible = isElementInViewport(el);
+      if (visible != old_visible) {
+          old_visible = visible;
+          if (typeof callback == 'function') {
+              callback();
+          }
+      }
+  }
+}
+
+var h = onVisibilityChange(document.getElementById("fig_figSepGender"), function() {
+  if (isElementInViewport(document.getElementById("fig_figSepGender")) == true) {
+    clickFigSepGender()
+  }
+});
+
+var h2 = onVisibilityChange(document.getElementById("fig_figAllCategories"), function() {
+  if (isElementInViewport(document.getElementById("fig_figAllCategories")) == true) {
+    clickFigAllCategories()
+  }
+});
+
+if (window.addEventListener) {
+  for (var handler of [h, h2]){
+    addEventListener('DOMContentLoaded', handler, false); 
+    addEventListener('load', handler, false); 
+    addEventListener('scroll', handler, false); 
+    addEventListener('resize', handler, false); 
+}
+} else if (window.attachEvent)  {
+  for (var handler of [h, h2]){
+    attachEvent('onDOMContentLoaded', handler); // IE9+ :(
+    attachEvent('onload', handler);
+    attachEvent('onscroll', handler);
+    attachEvent('onresize', handler);
+  }
+}
+</script>        
+<hr>
+<h2>Which cake do you want?</h2>
+
+<p>In the last two examples (i.e. kidney stones and sailors in distress), we were confronted with conflicting information: Treatment A was 
+better for each subcategory of kidney stones but treatment B was better overall. Sailors were more likely to be rescued in both good and bad weather if they were wearing a life vest but overall they were less likely to be saved if they wore no life vest. </p> 
+<p>Statistics is not only done for describing what is but often also for providing decision guidance: A patient with kidney stones trying to decide whether to pick treatment A or B would like to have a helpful statistical study giving some clue on which will most likely work better. 
+<p>This means that she has to choose whether to "trust" the statistics with more detailed information (i.e. specified to a kidney stone size or weather conditions) or the one with ignored information (which ignored subcategories). In both examples it made more sense to use the statistics with more information: We were interested in individual wellfare, i.e. the recovery probability of each patient and the survival chances of each sailor. As every individual person is in a specific category (kidney stone size or weather condition), we had to choose the statistics which considered this piece of information.</p>
+<p>Now of course, "trusting" a statistics does not make any sense; Both statistics are fully correct, but one is misleading for a decision maker.</p>
+<p>Now we need to be careful not to generalize this. "More information" is not necessarily better. We can construct an example of Simpson's paradox where it makes more sense to trust the statistics ignoring subcategories. </p>
+
+<p>We put ourselves in the shoes of someone tempted by a choice of cake: A juicy carrot cake and a delicious melty chocolate cake. He is supposed to be watching his weight so he would like to minimize the amount of fat he will ingest. Luckily, the cafe has provided a helpful chart depicting the fat content of each cake, even broken down on the two components of both cakes, batter and frosting.
+
+<figure id="fig_figCake">
+    <script src="buildFigureCake.js"></script>
+<svg id="figCake" style="background: grey">
+                    
+                    </svg></figure>
+                    
+                    <script>//
+                    
+    var dataACake = {Nx: 1, Ny: 1, Nx11: 0.75, Nx12: 0.25, Nx21: 0.15, Nx22: 0.85, Ny1: 0.33, Ny2: 0.67};
+    var dataBCake = {Nx: 1, Ny: 1, Nx11: 0.9, Nx12: 0.1, Nx21: 0.3, Nx22: 0.7, Ny1: 0.10, Ny2: 0.9};
+                    var newColors = [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)];
+
+                    //var labelDataA = {labelUpper: ["small stones", "visible"], labelLower: ["large stones", "visible"], labelUpperLeft: ["small stones (successfully treated)", "hidden"], labelUpperRight: ["small stones \n(treated without success)", "hidden"], labelLowerLeft: ["large stones (successfully treated)", "hidden"], labelLowerRight: ["large stones (treated without success)", "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment A with small kidney stones", labelRatioSideBottom: "Ratio of patients under treatment A with large kidney stones", labelRatioBarRightTop: "Ratio of patients under treatment B with small kidney stones", labelRatioBarRightBottom: "Ratio of patients under treatment B with large kidney stones"};
+                          
+
+                          var labelAUpperLeft = "fat";
+                          var labelAUpperRight = "other";
+                          var labelALowerLeft = "fat"
+                          var labelALowerRight = "other";
+                          var labelBUpperLeft = "fat"
+                          var labelBUpperRight = "other";
+                          var labelBLowerLeft = "fat"
+                          var labelBLowerRight = "other";
+                          var labelDataACake = {labelUpper: ["frosting", "hidden"], labelLower: ["batter", "hidden"], labelUpperLeft: [labelAUpperLeft, "visible"], labelUpperRight: [labelAUpperRight, "visible"], labelLowerLeft: [labelALowerLeft, "visible"], labelLowerRight: [labelALowerRight, "visible"], labelRatioBarSideTop: "Fraction of frosting in carrot cake", labelRatioBarSideBottom: "Fraction of batter in carrot cake"};
+                          var labelDataBCake = {labelUpper: ["frosting", "hidden"], labelLower: ["batter", "hidden"], labelUpperLeft: [labelBUpperLeft, "visible"], labelUpperRight: [labelBUpperRight, "visible"], labelLowerLeft: [labelBLowerLeft, "visible"], labelLowerRight: [labelBLowerRight, "visible"], labelRatioBarSideTop: "Fraction of frosting in chocolate cake", labelRatioBarSideBottom: "Fraction of batter in chocolate cake"};
+                            var scaleCake = 400;             
+                          var graphicalDataACake = {padding: 1, scale: scaleCake, textPadding: 30, color: newColors, subdivideVert: true, subdivideHori: true, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Carrot cake", titleRight: "Chocolate cake", titlePadding: 50, labelData: labelDataACake, heightText: 30};
+                          var graphicalDataBCake = {padding: 1, scale: scaleCake, textPadding: 30, color: newColors, subdivideVert: true, subdivideHori: true, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Carrot cake", titleRight: "Chocolate cake", titlePadding: 50, labelData: labelDataBCake, heightText: 30};
+                          var paddingBlocks = 5 // padding between W and M block
+                                                  
+                          buildFigureCake(d3.select("#figCake"), dataACake, dataBCake, graphicalDataACake, graphicalDataBCake, "comic/Cake1_mod_scaled.png", "comic/Cake2_mod_scaled.png", true)
+                          
+
+                          // block for mouseover action
+                          var svg = d3.select("#figCake")
+                          var posUpperRatioBar = svg.select("#groupLeft").select("#leftestRatioBarTop").node().getBoundingClientRect()
+
+                          // svg.select("#groupLeft").append("circle")
+                          //   .attr("cx", posUpperRatioBar.x)
+                          //   .attr("cy", posUpperRatioBar.y)
+                          //   .attr("r", 40)
+                          //   .attr("fill", "black")
+                          
+                          var groupLeft = d3.select("#figCake").select("#groupLeft")
+                          var groupRight = d3.select("#figCake").select("#groupRight");
+                          
+                          /*groupLeft.select(".ratioBarTop").select("text").text("Fraction of fat")
+                          groupLeft.select(".ratioBarBottom").select("text").text("Fraction of fat")
+                          groupRight.select(".ratioBarTop").select("text").text("Fraction of fat")
+                          groupRight.select(".ratioBarBottom").select("text").text("Fraction of fat")*/
+
+                           groupLeft.select("image")
+                            .attr("width", dataACake.Nx*graphicalDataACake.scale)
+                            .attr("height", 1.3*dataACake.Ny*graphicalDataACake.scale)
+                            .attr("y", -0.3*dataACake.Ny*graphicalDataACake.scale)
+                           groupRight.select("image")
+                            .attr("width", 1.1*dataBCake.Nx*graphicalDataBCake.scale)
+                            .attr("height", 1.8*dataBCake.Ny*graphicalDataBCake.scale)
+                            .attr("y", -0.57*dataBCake.Ny*graphicalDataBCake.scale)
+//                            .attr("height", 100)
+
+                              
+                      </script>
+
+    <p>
+    Our guy can see that both batter and frosting of the carrot cake have a lower proportion of fat than the chocolate cake's batter and frosting. But overall, the carrot cake has a higher percentage of fat. Now obviously, the correct choice (at least with respect to avoiding fat) would be the chocolate cake. The "statistics with more information", i.e. the one considering each subcategory, is the misleading one in this context.
+    </p>
+
+
+
+                    </body>
