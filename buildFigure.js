@@ -18,7 +18,7 @@ var makeBlocksNoRect = function(blockSelection, Nx, Ny, sc, pad, col)
         var rectGroup = blockSelection.append("g").attr("id", "rectGroup");
         
     }
-var buildGroup = function(groupref, data, graphicalData, tooltip_ref){
+var buildGroup = function(groupref, data, graphicalData, tooltip_ref, noRect=false){
     
     
     groupref.append("g")
@@ -39,7 +39,13 @@ var buildGroup = function(groupref, data, graphicalData, tooltip_ref){
         .attr("fill", graphicalData.color[0])
         .attr("width", data.Nx11*graphicalData.scale-graphicalData.padding)
         .attr("height", data.Ny1*graphicalData.scale-graphicalData.padding)
-    makeBlocks(blockUL, data.Nx11, data.Ny1, graphicalData.scale, graphicalData.padding, graphicalData.color[0])
+    if (noRect == true) {
+            makeBlocksNoRect(blockUL, data.Nx11, data.Ny1, graphicalData.scale, graphicalData.padding, graphicalData.color[0])
+    }
+    else
+    {    
+        makeBlocks(blockUL, data.Nx11, data.Ny1, graphicalData.scale, graphicalData.padding, graphicalData.color[0])
+    }
     blockUL.append("text")
         .attr("id", "labelU")
         .attr("x", (data.Nx11+data.Nx12)*graphicalData.scale/2)
@@ -86,7 +92,15 @@ var buildGroup = function(groupref, data, graphicalData, tooltip_ref){
         .attr("fill", graphicalData.color[1])
         .attr("width", data.Nx12*graphicalData.scale-graphicalData.padding)
         .attr("height", data.Ny1*graphicalData.scale-graphicalData.padding)
-    makeBlocks(blockUR, data.Nx12, data.Ny1, graphicalData.scale, graphicalData.padding, graphicalData.color[1])
+    console.log(noRect)
+    if (noRect == true)
+    {
+        makeBlocksNoRect(blockUR, data.Nx12, data.Ny1, graphicalData.scale, graphicalData.padding, graphicalData.color[1])
+    }
+    else
+    {
+        makeBlocks(blockUR, data.Nx12, data.Ny1, graphicalData.scale, graphicalData.padding, graphicalData.color[1])
+    }
     blockUR.append("text")
     .attr("id", "labelUR")
         .attr("x", (data.Nx12)*graphicalData.scale/2)
@@ -102,7 +116,15 @@ var buildGroup = function(groupref, data, graphicalData, tooltip_ref){
         .attr("fill", graphicalData.color[2])
         .attr("width", data.Nx21*graphicalData.scale-graphicalData.padding)
         .attr("height", data.Ny2*graphicalData.scale-graphicalData.padding)
-    makeBlocks(blockLL, data.Nx21, data.Ny2, graphicalData.scale, graphicalData.padding, graphicalData.color[2])
+     if (noRect == true)
+    {
+        makeBlocksNoRect(blockLL, data.Nx21, data.Ny2, graphicalData.scale, graphicalData.padding, graphicalData.color[2])
+    }
+    else
+    {
+        makeBlocks(blockLL, data.Nx21, data.Ny2, graphicalData.scale, graphicalData.padding, graphicalData.color[2])
+    }
+    
     blockLL.append("text")
     .attr("id", "labelL")
         .attr("x", (data.Nx11+data.Nx12)*graphicalData.scale/2)
@@ -125,7 +147,18 @@ var buildGroup = function(groupref, data, graphicalData, tooltip_ref){
         .attr("fill", graphicalData.color[3])
         .attr("width", data.Nx22*graphicalData.scale-graphicalData.padding)
         .attr("height", data.Ny2*graphicalData.scale-graphicalData.padding)
-    makeBlocks(blockLR, data.Nx22, data.Ny2, graphicalData.scale, graphicalData.padding, graphicalData.color[3])
+        
+     if (noRect == true)
+    {
+        makeBlocksNoRect(blockLR, data.Nx22, data.Ny2, graphicalData.scale, graphicalData.padding, graphicalData.color[3])
+    }
+    else
+    {
+        makeBlocks(blockLR, data.Nx22, data.Ny2, graphicalData.scale, graphicalData.padding, graphicalData.color[3])
+    }
+    
+        
+    
     blockLR.append("text")
     .attr("id", "labelLR")
         .attr("x", (data.Nx22)*graphicalData.scale/2)
@@ -540,7 +573,8 @@ var buildGroup = function(groupref, data, graphicalData, tooltip_ref){
 
 }
 
-var buildFigure = function(reffig, dataLeft, dataRight, graphicalDataLeft, graphicalDataRight){
+var buildFigure = function(reffig, dataLeft, dataRight, graphicalDataLeft, graphicalDataRight, noRect=false){
+    console.log(noRect)
     reffig.append("g")
         .attr("id", "groupLeft")
     reffig.append("g")
@@ -558,8 +592,8 @@ var buildFigure = function(reffig, dataLeft, dataRight, graphicalDataLeft, graph
         .style("font-size", "20px")
     var tooltip = reffig.append("g").attr("id", "tooltip")
         .attr("visibility", "hidden")
-    var groupLeft = buildGroup(reffig.select("#groupLeft"), dataLeft, graphicalDataLeft, tooltip)
-    var groupRight = buildGroup(reffig.select("#groupRight"), dataRight, graphicalDataRight, tooltip)
+    var groupLeft = buildGroup(reffig.select("#groupLeft"), dataLeft, graphicalDataLeft, tooltip, noRect=noRect)
+    var groupRight = buildGroup(reffig.select("#groupRight"), dataRight, graphicalDataRight, tooltip, noRect=noRect)
     var transformLeftX = parseFloat(graphicalDataLeft.textPadding+graphicalDataLeft.paddingBar)
     var transformLeftY = parseFloat(graphicalDataLeft.textPadding+graphicalDataLeft.paddingBar+graphicalDataLeft.titlePadding)
     var transformRightX = parseFloat(groupLeft.attr("width"))+parseFloat(graphicalDataRight.textPadding)+graphicalDataRight.paddingBar
