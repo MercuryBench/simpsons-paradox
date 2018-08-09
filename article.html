@@ -577,12 +577,12 @@
                               </tr>
                               <tr>
                                       <td>Rescue probability with life vest in good weather</td>
-                                      <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccA1_general" style="background-color:  #d3d3d3"></td>
+                                      <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccA1_general"></td>
                                       <td><span id="indicator3_general"></span></td>
                               </tr>
                               <tr>
                                       <td>Rescue probability with life vest in bad weather</td>
-                                      <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccA2_general" style="background-color:  #d3d3d3"></td>
+                                      <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccA2_general"></td>
                                       <td><span id="indicator4_general"></span></td>
                               </tr>
                           </table>
@@ -596,12 +596,12 @@
                                           </tr>
                                           <tr>
                                                   <td>Rescue probability without life vest in good weather</td>
-                                                  <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccB1_general" style="background-color:  #d3d3d3"></td>
+                                                  <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccB1_general"></td>
                                                   <td><span id="indicator5_general"></span></td>
                                           </tr>
                                           <tr>
                                                   <td>Rescue probability without life vest in bad weather</td>
-                                                  <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccB2_general" style="background-color:  #d3d3d3"></td>
+                                                  <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccB2_general"></td>
                                                   <td><span id="indicator6_general"></span></td>
                                           </tr>
                                       </table>
@@ -612,6 +612,7 @@
                       <svg id="figPlayground_general" onclick="" style="background: grey">    <!--viewBox="-70 -70 1200 350">-->
                           <g id="giantGroup">
                         <g id="groupLeft">      
+                            <image id="bg_img"></image> 
                           <text id="labelGood"></text>
                           <text id="labelBad"></text>
                             <text id="title">life vest</text>
@@ -636,7 +637,8 @@
                               <g id="bottom"></g>
                           </g>
                       </g>
-                      <g id="groupRight">     
+                      <g id="groupRight">    
+                          <image id="bg_img"></image> 
                           <text id="labelGood"></text>
                           <text id="labelBad"></text> 
                               <text id="title">no life vest</text>
@@ -728,43 +730,47 @@ if (window.addEventListener) {
 </script>        
 <hr>
 <h2>Which cake do you want?</h2>
+
 <p>In the last two examples (i.e. kidney stones and sailors in distress), we were confronted with conflicting information: Treatment A was 
 better for each subcategory of kidney stones but treatment B was better overall. Sailors were more likely to be rescued in both good and bad weather if they were wearing a life vest but overall they were less likely to be saved if they wore no life vest. </p> 
-<p>We had to choose whether to trust the statistics with more information (i.e. specified to a kidney stone size or weather conditions) or the one with ignored information (which ignored subcategories). In both cases it made more sense to trust the statistics with more information: We were interested in individual wellfare, i.e. the recovery probability of each patient and the survival chances of each sailor. As every individual person is in a specific category (kidney stone size or weather condition), we had to choose the statistics which considered this piece of information.</p>
-<p>No we need to be careful not to generalize this. We can construct an example of Simpson's paradox where it makes more sense to trust the
-statistics ignoring some information. We will see how this works:</p>
+<p>Statistics is not only done for describing what is but often also for providing decision guidance: A patient with kidney stones trying to decide whether to pick treatment A or B would like to have a helpful statistical study giving some clue on which will most likely work better. 
+<p>This means that she has to choose whether to "trust" the statistics with more detailed information (i.e. specified to a kidney stone size or weather conditions) or the one with ignored information (which ignored subcategories). In both examples it made more sense to use the statistics with more information: We were interested in individual wellfare, i.e. the recovery probability of each patient and the survival chances of each sailor. As every individual person is in a specific category (kidney stone size or weather condition), we had to choose the statistics which considered this piece of information.</p>
+<p>Now of course, "trusting" a statistics does not make any sense; Both statistics are fully correct, but one is misleading for a decision maker.</p>
+<p>Now we need to be careful not to generalize this. "More information" is not necessarily better. We can construct an example of Simpson's paradox where it makes more sense to trust the statistics ignoring subcategories. </p>
 
+<p>We put ourselves in the shoes of someone tempted by a choice of cake: A juicy carrot cake and a delicious melty chocolate cake. He is supposed to be watching his weight so he would like to minimize the amount of fat he will ingest. Luckily, the cafe has provided a helpful chart depicting the fat content of each cake, even broken down on the two components of both cakes, batter and frosting.
 
 <figure id="fig_figCake">
+    <script src="buildFigureCake.js"></script>
 <svg id="figCake" style="background: grey">
                     
                     </svg></figure>
                     
                     <script>//
                     
-    var dataA = {Nx: 1, Ny: 1, Nx11: 0.75, Nx12: 0.25, Nx21: 0.15, Nx22: 0.85, Ny1: 0.36, Ny2: 0.64};
-    var dataB = {Nx: 1, Ny: 1, Nx11: 0.9, Nx12: 0.1, Nx21: 0.3, Nx22: 0.7, Ny1: 0.10, Ny2: 0.9};
+    var dataACake = {Nx: 1, Ny: 1, Nx11: 0.75, Nx12: 0.25, Nx21: 0.15, Nx22: 0.85, Ny1: 0.33, Ny2: 0.67};
+    var dataBCake = {Nx: 1, Ny: 1, Nx11: 0.9, Nx12: 0.1, Nx21: 0.3, Nx22: 0.7, Ny1: 0.10, Ny2: 0.9};
                     var newColors = [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)];
 
                     //var labelDataA = {labelUpper: ["small stones", "visible"], labelLower: ["large stones", "visible"], labelUpperLeft: ["small stones (successfully treated)", "hidden"], labelUpperRight: ["small stones \n(treated without success)", "hidden"], labelLowerLeft: ["large stones (successfully treated)", "hidden"], labelLowerRight: ["large stones (treated without success)", "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment A with small kidney stones", labelRatioSideBottom: "Ratio of patients under treatment A with large kidney stones", labelRatioBarRightTop: "Ratio of patients under treatment B with small kidney stones", labelRatioBarRightBottom: "Ratio of patients under treatment B with large kidney stones"};
                           
 
-                          var labelAUpperLeft = dataA.Nx11 + "*" + dataA.Ny1 + " = " + (dataA.Nx11)*dataA.Ny1 + " patients with small kidney stones were successfully treated with treatment A";
-                          var labelAUpperRight = dataA.Nx12 + "*" + dataA.Ny1 + " = " + (dataA.Nx12)*dataA.Ny1 + " patients with small kidney stones were unsuccessfully treated with treatment A";
-                          var labelALowerLeft = dataA.Nx21 + "*" + dataA.Ny2 + " = " + (dataA.Nx21)*dataA.Ny2 + " patients with small kidney stones were successfully treated with treatment A";
-                          var labelALowerRight = dataA.Nx22 + "*" + dataA.Ny2 + " = " + (dataA.Nx22)*dataA.Ny2 + " patients with small kidney stones were unsuccessfully treated with treatment A";
-                          var labelBUpperLeft = dataB.Nx11 + "*" + dataB.Ny1 + " = " + (dataB.Nx11)*dataB.Ny1 + " patients with small kidney stones were successfully treated with treatment B";
-                          var labelBUpperRight = dataB.Nx12 + "*" + dataB.Ny1 + " = " + (dataB.Nx12)*dataB.Ny1 + " patients with small kidney stones were unsuccessfully treated with treatment B";
-                          var labelBLowerLeft = dataB.Nx21 + "*" + dataB.Ny2 + " = " + (dataB.Nx21)*dataB.Ny2 + " patients with small kidney stones were successfully treated with treatment B";
-                          var labelBLowerRight = dataB.Nx22 + "*" + dataB.Ny2 + " = " + (dataB.Nx22)*dataB.Ny2 + " patients with small kidney stones were unsuccessfully treated with treatment B";
-                          var labelDataA = {labelUpper: ["frosting", "visible"], labelLower: ["batter", "visible"], labelUpperLeft: [labelAUpperLeft, "hidden"], labelUpperRight: [labelAUpperRight, "hidden"], labelLowerLeft: [labelALowerLeft, "hidden"], labelLowerRight: [labelALowerRight, "hidden"], labelRatioBarSideTop: "Fraction of frosting in carrot cake", labelRatioBarSideBottom: "Fraction of batter in carrot cake"};
-                          var labelDataB = {labelUpper: ["frosting", "visible"], labelLower: ["batter", "visible"], labelUpperLeft: [labelBUpperLeft, "hidden"], labelUpperRight: [labelBUpperRight, "hidden"], labelLowerLeft: [labelBLowerLeft, "hidden"], labelLowerRight: [labelBLowerRight, "hidden"], labelRatioBarSideTop: "Fraction of frosting in chocolate cake", labelRatioBarSideBottom: "Fraction of batter in carrot cake"};
-                            var scale = 400;             
-                          var graphicalDataA = {padding: 1, scale: scale, textPadding: 30, color: newColors, subdivideVert: true, subdivideHori: true, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataA};
-                          var graphicalDataB = {padding: 1, scale: scale, textPadding: 30, color: newColors, subdivideVert: true, subdivideHori: true, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataB};
+                          var labelAUpperLeft = "fat";
+                          var labelAUpperRight = "other";
+                          var labelALowerLeft = "fat"
+                          var labelALowerRight = "other";
+                          var labelBUpperLeft = "fat"
+                          var labelBUpperRight = "other";
+                          var labelBLowerLeft = "fat"
+                          var labelBLowerRight = "other";
+                          var labelDataACake = {labelUpper: ["frosting", "hidden"], labelLower: ["batter", "hidden"], labelUpperLeft: [labelAUpperLeft, "visible"], labelUpperRight: [labelAUpperRight, "visible"], labelLowerLeft: [labelALowerLeft, "visible"], labelLowerRight: [labelALowerRight, "visible"], labelRatioBarSideTop: "Fraction of frosting in carrot cake", labelRatioBarSideBottom: "Fraction of batter in carrot cake"};
+                          var labelDataBCake = {labelUpper: ["frosting", "hidden"], labelLower: ["batter", "hidden"], labelUpperLeft: [labelBUpperLeft, "visible"], labelUpperRight: [labelBUpperRight, "visible"], labelLowerLeft: [labelBLowerLeft, "visible"], labelLowerRight: [labelBLowerRight, "visible"], labelRatioBarSideTop: "Fraction of frosting in chocolate cake", labelRatioBarSideBottom: "Fraction of batter in chocolate cake"};
+                            var scaleCake = 400;             
+                          var graphicalDataACake = {padding: 1, scale: scaleCake, textPadding: 30, color: newColors, subdivideVert: true, subdivideHori: true, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Carrot cake", titleRight: "Chocolate cake", titlePadding: 50, labelData: labelDataACake, heightText: 30};
+                          var graphicalDataBCake = {padding: 1, scale: scaleCake, textPadding: 30, color: newColors, subdivideVert: true, subdivideHori: true, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Carrot cake", titleRight: "Chocolate cake", titlePadding: 50, labelData: labelDataBCake, heightText: 30};
                           var paddingBlocks = 5 // padding between W and M block
                                                   
-                          buildFigure(d3.select("#figCake"), dataA, dataB, graphicalDataA, graphicalDataB, true)
+                          buildFigureCake(d3.select("#figCake"), dataACake, dataBCake, graphicalDataACake, graphicalDataBCake, "comic/Cake1_mod_scaled.png", "comic/Cake2_mod_scaled.png", true)
                           
 
                           // block for mouseover action
@@ -780,28 +786,27 @@ statistics ignoring some information. We will see how this works:</p>
                           var groupLeft = d3.select("#figCake").select("#groupLeft")
                           var groupRight = d3.select("#figCake").select("#groupRight");
                           
-                          groupLeft.select(".ratioBarTop").select("text").text("Fraction of fat")
+                          /*groupLeft.select(".ratioBarTop").select("text").text("Fraction of fat")
                           groupLeft.select(".ratioBarBottom").select("text").text("Fraction of fat")
                           groupRight.select(".ratioBarTop").select("text").text("Fraction of fat")
-                          groupRight.select(".ratioBarBottom").select("text").text("Fraction of fat")
+                          groupRight.select(".ratioBarBottom").select("text").text("Fraction of fat")*/
 
-                           groupLeft.append("image")
-                            .attr("xlink:href", "comic/Cake1_mod.jpg")
-                            .attr("x", -25)
-                            .attr("y", -175)
-                            .attr("width", 1.1*dataA.Nx*graphicalDataA.scale)
-                            .attr("height", 1.6*dataA.Ny*graphicalDataA.scale)
-                            .attr("opacity", 0.2)
-                           groupRight.append("image")
-                            .attr("xlink:href", "comic/Cake2_mod.jpg")
-                            .attr("width", dataB.Nx*graphicalDataA.scale)
-                            .attr("height", dataB.Ny*graphicalDataA.scale)
-                            .attr("opacity", 0.2)
+                           groupLeft.select("image")
+                            .attr("width", dataACake.Nx*graphicalDataACake.scale)
+                            .attr("height", 1.3*dataACake.Ny*graphicalDataACake.scale)
+                            .attr("y", -0.3*dataACake.Ny*graphicalDataACake.scale)
+                           groupRight.select("image")
+                            .attr("width", 1.1*dataBCake.Nx*graphicalDataBCake.scale)
+                            .attr("height", 1.8*dataBCake.Ny*graphicalDataBCake.scale)
+                            .attr("y", -0.57*dataBCake.Ny*graphicalDataBCake.scale)
 //                            .attr("height", 100)
 
                               
                       </script>
 
+    <p>
+    Our guy can see that both batter and frosting of the carrot cake have a lower proportion of fat than the chocolate cake's batter and frosting. But overall, the carrot cake has a higher percentage of fat. Now obviously, the correct choice (at least with respect to avoiding fat) would be the chocolate cake. The "statistics with more information", i.e. the one considering each subcategory, is the misleading one in this context.
+    </p>
 
 
 
