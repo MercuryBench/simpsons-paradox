@@ -149,11 +149,11 @@ var dataPGA_actually = {Nx: 1, Ny: 1, Nx11: 0.95, Nx12: 0.05, Nx21: 0.75, Nx22: 
                                g.select("#labelGood")
                                 .attr("text-anchor", "middle")
                                 .attr("transform", `translate(${-graphicalData.paddingBars-graphicalData.heightText}, ${dataA.Ny1/2*graphicalData.scale})`+ " rotate(270)")
-                                .text("good weather")
+                                .text("life vest")
                                g.select("#labelBad")
                                 .attr("text-anchor", "middle")
                                 .attr("transform", `translate(${-graphicalData.paddingBars-graphicalData.heightText}, ${(dataA.Ny1+dataA.Ny2/2)*graphicalData.scale})`+ " rotate(270)")
-                                .text("bad weather")
+                                .text("no life vest")
                                }
                                else{
                                 // add label for good and bad weather
@@ -161,11 +161,11 @@ var dataPGA_actually = {Nx: 1, Ny: 1, Nx11: 0.95, Nx12: 0.05, Nx21: 0.75, Nx22: 
                                g.select("#labelGood")
                                 .attr("text-anchor", "middle")
                                 .attr("transform", `translate(${id[1].Nx*graphicalData.scale + graphicalData.paddingBars + 1.5*graphicalData.heightText}, ${dataA.Ny1/2*scale})`+ " rotate(270)")
-                                .text("good weather")
+                                .text("life vest")
                                g.select("#labelBad")
                                 .attr("text-anchor", "middle")
                                 .attr("transform", `translate(${id[1].Nx*graphicalData.scale + graphicalData.paddingBars + 1.5*graphicalData.heightText}, ${(dataA.Ny1+dataA.Ny2/2)*graphicalData.scale})`+ " rotate(270)")
-                                .text("bad weather")
+                                .text("no life vest")
                                }
 
                           }
@@ -174,7 +174,7 @@ var dataPGA_actually = {Nx: 1, Ny: 1, Nx11: 0.95, Nx12: 0.05, Nx21: 0.75, Nx22: 
                               var testForParadox = function(dataA, dataB){
                                   var ratio1AhigherB = (dataA.Nx11/dataA.Nx > dataB.Nx11/dataB.Nx);
                                   var ratio2AhigherB = (dataA.Nx21/dataA.Nx > dataB.Nx21/dataB.Nx);
-                                  var ratioTotAhigherB = ((dataA.Nx11*dataA.Ny1+dataA.Nx21*dataA.Ny2)/(dataA.Nx*dataA.Ny) > (dataB.Nx11*dataB.Ny1+dataB.Nx21*dataB.Ny2)/(dataB.Nx*dataB.Ny));
+                                  var ratioTotAhigherB = ((dataA.Nx11*dataA.Ny1+dataA.Nx21*dataA.Ny2)/(dataA.Nx*dataA.Ny) >= (dataB.Nx11*dataB.Ny1+dataB.Nx21*dataB.Ny2)/(dataB.Nx*dataB.Ny));
                                   if ((ratio1AhigherB && ratio2AhigherB && !ratioTotAhigherB) || (!ratio1AhigherB && !ratio2AhigherB && ratioTotAhigherB)) {
                                       return true;
                                   }
@@ -418,9 +418,12 @@ var dataPGA_actually = {Nx: 1, Ny: 1, Nx11: 0.95, Nx12: 0.05, Nx21: 0.75, Nx22: 
                           {// update paradox status
                               if (testForParadox(dataA, dataB)) {
                                 d3.select("#p_paradox").text("Yes");
-                                document.getElementById("explanation").innerHTML = "<b>Well done!</b> In this scenario, chances of rescue are not too bad in total,"
-                                 + " even without a life jacket in good weather. Only in bad weather, without a life jacket, chances of survival are grim. Hence, sailors will grudgingly don life jackets"
-                                 + " only if the weather is bad"
+                                document.getElementById("explanation").innerHTML = "<b>Well done!</b> In good weather, your rescue probability is not too bad even without a life vest. In bad weather, wearing no life jacket"
+                                 + " is a really terrible idea. The way you chose those parameters, it seems that sailors pretty much only wear life vests in bad weather and deem it unnecessary in good weather."
+                                 + " Hence if we look at a typical sailor gone overboard in bad weather, he is probably wearing a life jacket and will hence be rescued with pretty high probability (80%)."
+                                 + " On the other hand, if you pick a typical distressed sailor in good weather, he probably was too careless to don a life jacket beforehand and thus will only be rescued"
+                                 + " with probability 75%. As 75% is lower than 80%, it appears that sailors in bad weather are actually safer than sailors in good weather."
+                                 d3.select("#explanation").style("background-color", "green")
                               }
                               else {
                                   d3.select("#p_paradox").text("No");

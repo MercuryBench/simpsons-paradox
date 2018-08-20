@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <!--<script src="https://distill.pub/template.v1.js"></script>-->
-<head>
+<head><script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,900" rel="stylesheet"> 
   <link href="https://fonts.googleapis.com/css?family=Karla:400,700" rel="stylesheet"> 
   <style>
@@ -42,6 +44,7 @@
     var dataB = {Nx: 20, Ny: 12, Nx11: 17, Nx12: 3, Nx21: 13, Nx22: 7, Ny1: 10, Ny2: 2};
                         var scale = 20
                         var paddingBar = 60
+                        var scaleKidney = 20
     </script>
 
 <script type="text/front-matter">
@@ -73,6 +76,11 @@
     <body>
         
                   <h1>Simpson's paradox</h1>
+                  <h2>What's this?</h2>
+                  <p>I do not know why you're here, but this is an attempt at an <a href="https://explorabl.es">"explorable explanation"</a> of Simpson's paradox in statistics. It is a truly mindboggling phenomenon which is 
+                    totally elementary in nature but which requires the juggling of multiple conditional probabilities and is famously difficult to unravel (see, for example, Judea Pearl's report "Understanding Simpson’s paradox.")  </p>
+                    <p>In this <i>explorable,</i> we will try to gain a deeply intuitive understanding of how Simpson's paradox works and when it happens. There are nice diagrams and animations you can tinker with. Let's dive right in with the following comic.</p>
+                  <h2>At the doctor's office</h2>
                   <p>Imagine seeing your doctor and the following dialogue ensues:</p> <br>
                   <figure>
                     <img src="comic/P1.jpg" width="800" border="3" hspace="50"><br>
@@ -96,7 +104,7 @@
                         <td bgcolor="#00DD00">81.7%</td>
                       </tr>
                     </table></figure>
-                    <p>but after creating subcategories "patients having small kidney stones" and "patients having large kidney stones" (with every patients being in either one), we get</p>
+                    <p>but after creating subcategories "patients having small kidney stones" and "patients having large kidney stones" (with every patient being in either one), we get</p>
                     <figure><table style="width:600px">
                       <caption>Table 2. Treatment success rate for each subcategory.</caption>
                       <tr>
@@ -118,7 +126,7 @@
                     </figure>
                     <p>In this short explanation we will try to answer the following questions.</p>
                     <ol>
-                      <li>How can treatment A be better than treatment B for every subcategory, with treatment B being better overall?</li>
+                      <li>How can <b>treatment A be better than treatment B for every subcategory</b>, with <b>treatment B better than treatment A overall?</b></li>
                       <li>Which treatment is now actually better? I.e. should we trust table 1 or table 2?</li>
                     </ol>
                   <hr>
@@ -151,7 +159,7 @@
                     <hr>
                     <h2>Getting to know our patients</h2>
                   <p>
-                    For each treatment A and B we consider 240 patients subjected to it. We arrange them nicely in a rectangle 12 by 20, like so:
+                    We have 240 patients each treated by A and B. We arrange them nicely in a rectangle 12 by 20, like so:
                   </p>
                   <figure><svg id="figWhole" style="background: grey", style="stroke: black">
                   </svg></figure>
@@ -171,8 +179,7 @@
                     <hr>
                     <h2>Large and small kidney stones</h2>
                     <p>
-                      Now we need to differentiate between small and large kidney stones. We use yellow for patients with <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones and 
-                        blue for <span style="background-color: rgb(0, 163, 255)">large</span> ones.
+                      Some patients have <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones and some have <span style="background-color: rgb(0, 163, 255)">large</span> ones.
                         </p>
                         
                         <p>
@@ -181,10 +188,11 @@
                     <figure id="fig_figSepGender"><svg id="figSepGender" onclick="clickFigSepGender()" style="background: grey">
                         </svg></figure>
                         <div>
+                          <p>Hover over the following items to see an effect.</p>
                         <ul>
-                            <li id="item1" onmouseover="mouseover1()" onmouseleave="mouseleave1()">Among patients treated with treatment A, there were more patients with <span style="background-color: rgb(0, 163, 255)">large</span> 
+                            <li id="item1" onmouseover="mouseover1()" onmouseleave="mouseleave1()">In treatment group A there are more patients with <span style="background-color: rgb(0, 163, 255)">large</span> 
                               kidney stones than those with <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones </li>
-                            <li id="item2"  onmouseover="mouseover2()" onmouseleave="mouseleave2()">Among patients treated with treatment B, there were more patients with <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones 
+                            <li id="item2"  onmouseover="mouseover2()" onmouseleave="mouseleave2()">In treatment group B there are more patients with <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones 
                               than those with <span style="background-color: rgb(0, 163, 255)">small</span> kidney stones</span></li>
                           </ul></div>
                           <script>
@@ -222,8 +230,8 @@
                               var labelBLower = dataB.Nx + " * " + dataB.Ny2 + " = " + dataB.Nx*dataB.Ny2 + " patients with large kidney stones were treated with treatment B";
                               var labelDataA = {labelUpper: ["small stones", "hidden"], labelLower: ["large stones", "hidden"], labelUpperLeft: [labelAUpper, "hidden"], labelUpperRight: [labelAUpper, "hidden"], labelLowerLeft: [labelALower, "hidden"], labelLowerRight: [labelALower, "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment A with small kidney stones", labelRatioBarSideBottom: "Ratio of patients under treatment A with large kidney stones"};
                               var labelDataB = {labelUpper: ["small stones", "hidden"], labelLower: ["large stones", "hidden"], labelUpperLeft: [labelBUpper, "hidden"], labelUpperRight: [labelBUpper, "hidden"], labelLowerLeft: [labelBLower, "hidden"], labelLowerRight: [labelBLower, "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment B with small kidney stones", labelRatioBarSideBottom: "Ratio of patients under treatment B with large kidney stones"};
-                              var graphicalDataA = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataA};
-                              var graphicalDataB = {padding: 1, scale: scale, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataB};
+                              var graphicalDataA = {padding: 1, scale: scaleKidney, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataA};
+                              var graphicalDataB = {padding: 1, scale: scaleKidney, textPadding: 30, color: ["white", "white", "white", "white"], subdivideVert: false, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataB};
 
                                     
                               buildFigure(d3.select("#figSepGender"), dataA, dataB, graphicalDataA, graphicalDataB, paddingBlocks, paddingBar)
@@ -263,7 +271,7 @@
                           </script>
                           <hr>
                           <h2>Treatment success rates</h2>
-                    <p>Now we need to look at the success rates of the treatments in each of those four subgroups.  </p>
+                    <p>How good is each treatment for any subgroup?  </p>
                     
                     <script>
                       var mouseover12 = function()
@@ -320,6 +328,39 @@
                           svg.selectAll(".ratioBarTop").attr("opacity", 0.15)
                           svg.selectAll(".ratioBarBottom").attr("opacity", 0.15)
                           svg.selectAll(".ratioBarSide").attr("opacity", 0.15)
+                          
+                          var strHover = `${dataA.Ny1}*${dataA.Nx11} + ${dataA.Ny2}*${dataA.Nx21} = ${dataA.Nx11*dataA.Ny1 + dataA.Nx21*dataA.Ny2} successful`
+
+                          svg.select("#groupLeft").select("#hoverGroup").select("text")
+                            .text(strHover)
+                          
+                          var ln = svg.select("#groupLeft").select("#hoverGroup").select("text").node().getComputedTextLength()+20
+
+                          svg.select("#groupLeft").select("#hoverGroup").select("rect")
+                            .attr("width", ln)
+                            .attr("height", 30)
+                          
+                          svg.select("#groupLeft").select("#hoverGroup")
+                            .attr("transform", `translate(${Math.min(dataA.Nx11, dataA.Nx21)*scaleKidney/2-ln/2}, ${dataA.Ny1*scaleKidney-15})`)
+                            .attr("visibility", "visible")
+
+                          var strHover = `${dataB.Ny1}*${dataB.Nx11} + ${dataB.Ny2}*${dataB.Nx21} = ${dataB.Nx11*dataB.Ny1 + dataB.Nx21*dataB.Ny2} successful`
+
+                          svg.select("#groupRight").select("#hoverGroup").select("text")
+                            .text(strHover)
+
+                          var ln = svg.select("#groupRight").select("#hoverGroup").select("text").node().getComputedTextLength()+20
+
+                          svg.select("#groupRight").select("#hoverGroup").select("rect")
+                            .attr("width", ln)
+                            .attr("height", 30)
+
+                          svg.select("#groupRight").select("#hoverGroup")
+                            .attr("transform", `translate(${Math.min(dataB.Nx11, dataB.Nx21)*scaleKidney/2-ln/2}, ${dataB.Ny1*scaleKidney-15})`)
+                            .attr("visibility", "visible")
+
+
+
                           document.getElementById("item32").style = "background-color: green"
                       }
                       var mouseleave32 = function()
@@ -333,6 +374,11 @@
                           svg.selectAll(".ratioBarBottom").attr("opacity", 1)
                           svg.selectAll(".ratioBarSide").attr("opacity", 1)
                           document.getElementById("item32").style = "background-color: white"
+
+                          svg.select("#groupLeft").select("#hoverGroup")
+                            .attr("visibility", "hidden")
+                            svg.select("#groupRight").select("#hoverGroup")
+                            .attr("visibility", "hidden")
                       }
                       </script>
                     
@@ -341,11 +387,9 @@
                     </svg></figure>
                     <div visibility="hidden"><p>We can see the following things (hover over items to see effects):</p>
                       <ul>
-                        <li id="item12" onmouseover="mouseover12()" onmouseleave="mouseleave12()">Treatment A has a better success rate for <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones. </li>
-                        <li id="item22"  onmouseover="mouseover22()" onmouseleave="mouseleave22()">Treatment A has a better success rate for <span style="background-color: rgb(0, 163, 255)">large</span> kidney stones. </li>
-                        <li id="item32"  onmouseover="mouseover32()" onmouseleave="mouseleave32()">Treatment B has a better success rate overall: The number of patients successfully treated by treatment A is lower than the
-                          corresponding number for treatment B.
-                        </li>
+                        <li id="item12" onmouseover="mouseover12()" onmouseleave="mouseleave12()">Treatment A has a better success rate for <span style="background-color: rgb(243, 169, 6)">small</span> kidney stones, <b>90%</b> vs <b>85%.</b> </li>
+                        <li id="item22"  onmouseover="mouseover22()" onmouseleave="mouseleave22()">Treatment A has a better success rate for <span style="background-color: rgb(0, 163, 255)">large</span> kidney stones, <b>70%</b> vs <b>65%.</b> </li>
+                        <li id="item32"  onmouseover="mouseover32()" onmouseleave="mouseleave32()">Treatment A has a <b>worse</b> success rate overall: <b>184/240</b> vs <b>196/240</b>. </li>
                       </ul>
                       
                       <p> This is what constitutes Simpson's paradox: Although the success rates in each subpopulation are better for treatment A, the combined success rate is better for treatment B.
@@ -353,16 +397,16 @@
                       </p>
                       <hr>
                       <h2>Explanation in words</h2>
-                      <p>We can think about this paradox in the following way. Try to match each bullet point with the according graphical representation.</p>
-                      <ol> 
-                        <li>Treatment A is really the better method: For both small and large kidney stones it has a higher success rate.</li>
-                        <li>For some reason, surgeons picked treatment A for <i>hard</i> cases, i.e. large kidney stones (note that large kidney stones always have lower remedy rates than small stones, regardless of
-                        the treatment type used). Thus, the patients treated by method A were typically of the harder-to-cure large-stone-variety with a success rate of 70%. The smaller number of 
-                        small-stone patients does not carry a lot of weight.</li>
-                        <li>Similarly, in the <i>easy</i> case of small kidney stones, surgeons typically picked treatment B. Thus, patients treated by method B were most likely of the 
-                          easily-treated small-stone type with a success rate of 85%. The smaller number of large-stone patients is almost negligible.</li>
-                        <li>In conclusion: <i>Treatment B is worse for each individual patient</i>. But: Treatment B was mostly used on easier cases and hence seems more successful. </li>
-                      </ol>
+                      <p>How did this happen? We can think about it like this:</p>
+                      <ul> 
+                        <li><b>Treatment A is really the better method</b>: For both small and large kidney stones it has a higher success rate. Note that each individual patient has a well-defined kidney stone size and is thus better off with A.</li>
+                        <li>Note that large kidney stones always have lower remedy rates than small stones, regardless of
+                          the treatment type used. This means: <b>Large stone = hard case</b></li>
+                        <li>For some reason, surgeons <b>picked treatment A for hard cases</b>, i.e. large kidney stones. Thus, the patients treated by method A were typically of the harder-to-cure large-stone-variety with a success rate of 70%. </li>
+                        <li>Similarly, surgeons typically <b>picked treatment B in the easy case</b> of small kidney stones. Thus, patients treated by method B were most likely of the 
+                          easily-treated small-stone type with a success rate of 85%.</li>
+                        <li>Treatment B was used on easier cases and <b>seems more successful</b> than Treatment A (used on hard cases). </li>
+                      </ul>
                       <p>We can now revisit our original question and answer them:</p>
                       <ol>
                         <li>How can treatment A be better than treatment B for every subcategory, with treatment B being better overall? <b>This is due too a bias in the selection of treatment 
@@ -389,8 +433,8 @@
                           var labelDataA = {labelUpper: ["small stones", "visible"], labelLower: ["large stones", "visible"], labelUpperLeft: [labelAUpperLeft, "hidden"], labelUpperRight: [labelAUpperRight, "hidden"], labelLowerLeft: [labelALowerLeft, "hidden"], labelLowerRight: [labelALowerRight, "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment A with small kidney stones", labelRatioBarSideBottom: "Ratio of patients under treatment A with large kidney stones"};
                           var labelDataB = {labelUpper: ["small stones", "visible"], labelLower: ["large stones", "visible"], labelUpperLeft: [labelBUpperLeft, "hidden"], labelUpperRight: [labelBUpperRight, "hidden"], labelLowerLeft: [labelBLowerLeft, "hidden"], labelLowerRight: [labelBLowerRight, "hidden"], labelRatioBarSideTop: "Ratio of patients under treatment B with small kidney stones", labelRatioBarSideBottom: "Ratio of patients under treatment B with large kidney stones"};
                               
-                          var graphicalDataA = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 80, 75), d3.hcl(250, 80, 60), d3.hcl(250, 80, 60)], subdivideVert: true, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataA};
-                          var graphicalDataB = {padding: 1, scale: scale, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 80, 75), d3.hcl(250, 80, 60), d3.hcl(250, 80, 60)], subdivideVert: true, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataB};
+                          var graphicalDataA = {padding: 1, scale: scaleKidney, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 80, 75), d3.hcl(250, 80, 60), d3.hcl(250, 80, 60)], subdivideVert: true, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataA};
+                          var graphicalDataB = {padding: 1, scale: scaleKidney, textPadding: 30, color: [d3.hcl(75, 80, 75), d3.hcl(75, 80, 75), d3.hcl(250, 80, 60), d3.hcl(250, 80, 60)], subdivideVert: true, subdivideHori: false, paddingBlocks : 5, paddingBar: 50, widthBar: 25, titleLeft: "Treatment A", titleRight: "Treatment B", titlePadding: 50, labelData: labelDataB};
                           var paddingBlocks = 5 // padding between W and M block
                                                   
                           buildFigure(d3.select("#figAllCategories"), dataA, dataB, graphicalDataA, graphicalDataB, paddingBlocks, paddingBar)
@@ -446,32 +490,44 @@
                               }
                       </script>
                       <hr>
-                      <h2>Exploring Simpson's paradox: Should I wear a life vest?</h2>
+                      <h2>Exploring Simpson's paradox: Sailors are safer in bad weather</h2>
 
 
                       
-                      <p>A study found that sailors who went overboard were more likely to be rescued if they were wearing <emph>no</emph> life vest. The reason for that is that there is a
-                           hidden variable, "weather", which is unaccounted for in this analysis. In both good and bad weather, the probability of rescue was higher for sailors wearing a life jacket than for those not
-                          wearing a life jacket.  </p>
-                          <p>We have fixed the rescue probabilities with and without life vest for good and bad weather, so you have only two parameters to fiddle with: The fraction of sailors donning a life jacket in 
-                              good resp. bad weather. <b>Try to choose those parameters in such a way that the compound ratio of sailors saved without life vests is actually lower than for those with life vests.</b>
+                      <p>A study found that sailors gone overboard were <b>more likely to be rescued if the weather was bad</b>. This is totally
+                          unintuitive as good weather implies better visibility conditions and easier lifesaving. </p>
+                          <p>If we condition on an additional
+                           variable, "sailor wearing/not wearing a life vest", the relation reverses: For both sailors without a life jacket and those wearing a life jackets, 
+                           <b>chances of rescue were higher in good weather</b> than in bad weather (as would be expected). If you think that Simpson's paradox might again be responsible for that, you would be right. </p>
+                           <p>Let's explore what happens here.</p>
+                          <p>We have fixed the rescue probabilities with and without life vest in good and bad weather, so you have only two parameters to fiddle with: The fraction of sailors donning a life jacket in 
+                              good resp. bad weather. 
                           </p>
-                      
+                          <p>Note that from here on, we do not visualize individuals (which were the small squares in the figures above), but use fractions and percentages. If it helps you, think of
+                            each pixel as an individual sailor (although there may be some minor roundoff errors in this case) </p>
+                      <style>
+                        .assignment {
+                          font-size: 20pt
+                        }
+                      </style>
+                            <blockquote class="assignment">Explore: Try to choose those parameters in such a way that the compound ratio of sailors saved in good weather is actually worse than in bad weather (indicators for this are below the figure).</blockquote>
+
                       <div class="row">
                           <div class="column">
                               <table>
+                                  <caption>Good weather</caption>
                               <tr>
-                                      <td>Fraction of sailors donning life vest in good weather</td>
+                                      <td>Fraction of sailors donning life vest</td>
                                       <td><input type="range" min="0" max="100" value="50" step="0.01" class="slider" id="rangeRatioA1"></td>
                                       <td><span id="indicator1"></span></td>
                               </tr>
                               <tr>
-                                      <td>Rescue probability with life vest in good weather</td>
+                                      <td>Rescue probability with life vest</td>
                                       <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccA1" style="background-color:  #d3d3d3" disabled="true"></td>
                                       <td><span id="indicator3"></span></td>
                               </tr>
                               <tr>
-                                      <td>Rescue probability with life vest in bad weather</td>
+                                      <td>Rescue probability without life vest</td>
                                       <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccA2" style="background-color:  #d3d3d3" disabled="true"></td>
                                       <td><span id="indicator4"></span></td>
                               </tr>
@@ -479,18 +535,19 @@
                           </div>
                           <div class="column">
                                   <table>
+                                      <caption>Bad weather</caption>
                                           <tr>
-                                                  <td>Fraction of sailors donning life vest in bad weather</td>
+                                                  <td>Fraction of sailors donning life vest</td>
                                                   <td><input type="range" min="0" max="100" width="20px" value="50" class="slider" id="rangeRatioB1"></td>
                                                   <td><span id="indicator2"></span></td>
                                           </tr>
                                           <tr>
-                                                  <td>Rescue probability without life vest in good weather</td>
+                                                  <td>Rescue probability with life vest</td>
                                                   <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccB1" style="background-color:  #d3d3d3" disabled="true"></td>
                                                   <td><span id="indicator5"></span></td>
                                           </tr>
                                           <tr>
-                                                  <td>Rescue probability without life vest in bad weather</td>
+                                                  <td>Rescue probability without life vest</td>
                                                   <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccB2" style="background-color:  #d3d3d3" disabled="true"></td>
                                                   <td><span id="indicator6"></span></td>
                                           </tr>
@@ -504,7 +561,7 @@
                         <g id="groupLeft">      
                           <text id="labelGood"></text>
                           <text id="labelBad"></text>
-                            <text id="title">life vest</text>
+                            <text id="title">good weather</text>
                         <rect id="rect1" width = 540 height=80 fill="white" stroke="black" ></rect>
                         <text id="text1" text-anchor="middle" dy="0.5em"></text>
                         <rect id="rect2" x=540 width=60 height=80 fill="white" stroke="black"></rect>
@@ -529,7 +586,7 @@
                       <g id="groupRight">     
                           <text id="labelGood"></text>
                           <text id="labelBad"></text> 
-                              <text id="title">no life vest</text>
+                              <text id="title">bad weather</text>
                               <rect id="rect1" width = 540 height=80 fill="white" stroke="black" ></rect>
                               <text id="text1" text-anchor="middle"></text>
                               <rect id="rect2" x=540 width=60 height=80 fill="white" stroke="black"></rect>
@@ -554,118 +611,32 @@
                           </g>
                       </svg></figure>
                       <br/>
-                      <span>total rescue probability with life vest:</span>
-                      <span id="totalRatioA"></span>
-                      <br/>
-                      <span>total rescue probability without life vest:</span>
-                      <span id="totalRatioB"></span>
-                      <br/>
+                      <style>
+                      table.fixed {table-layout:fixed; width:450px;}/*Setting the table width is important!*/
+table.fixed td {overflow:hidden;}/*Hide text outside the cell.*/
+table.fixed td:nth-of-type(1) {width:400px;}/*Setting the width of column 1.*/
+table.fixed td:nth-of-type(2) {width:90px;}/*Setting the width of column 2.*/</style>
+                      <table class="fixed">
+                        <tr>
+                          <td><span>Total rescue probability in good weather:   </span></td>
+                          <td align="center">
+                              <span id="totalRatioA"></span></td>
+                        </tr>
+                        <tr>
+                          <td><span>Total rescue probability in bad weather:</span></td>
+                          <td align="center">
+                              <span id="totalRatioB"></span></td>
+                        </tr></tr>
+                      </table>
+                      
+                      
                       <span>Paradox:</span>
                       <span id="p_paradox"></span>
                       <p id="explanation"></p>
                       <script src="playground.js"></script>
 
                 
-<hr>
- <div class="row">
-                          <div class="column">
-                              <table>
-                              <tr>
-                                      <td>Fraction of sailors donning life vest in good weather</td>
-                                      <td><input type="range" min="0" max="100" value="50" step="0.01" class="slider" id="rangeRatioA1_general"></td>
-                                      <td><span id="indicator1_general"></span></td>
-                              </tr>
-                              <tr>
-                                      <td>Rescue probability with life vest in good weather</td>
-                                      <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccA1_general"></td>
-                                      <td><span id="indicator3_general"></span></td>
-                              </tr>
-                              <tr>
-                                      <td>Rescue probability with life vest in bad weather</td>
-                                      <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccA2_general"></td>
-                                      <td><span id="indicator4_general"></span></td>
-                              </tr>
-                          </table>
-                          </div>
-                          <div class="column">
-                                  <table>
-                                          <tr>
-                                                  <td>Fraction of sailors donning life vest in bad weather</td>
-                                                  <td><input type="range" min="0" max="100" width="20px" value="50" class="slider" id="rangeRatioB1_general"></td>
-                                                  <td><span id="indicator2_general"></span></td>
-                                          </tr>
-                                          <tr>
-                                                  <td>Rescue probability without life vest in good weather</td>
-                                                  <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccB1_general"></td>
-                                                  <td><span id="indicator5_general"></span></td>
-                                          </tr>
-                                          <tr>
-                                                  <td>Rescue probability without life vest in bad weather</td>
-                                                  <td><input type="range" min="0" max="100" value="50" class="slider" id="rangeSuccB2_general"></td>
-                                                  <td><span id="indicator6_general"></span></td>
-                                          </tr>
-                                      </table>
-                          </div>
-                        </div> 
-                        
-                      <figure>
-                      <svg id="figPlayground_general" onclick="" style="background: grey">    <!--viewBox="-70 -70 1200 350">-->
-                          <g id="giantGroup">
-                        <g id="groupLeft">      
-                            <image id="bg_img"></image> 
-                          <text id="labelGood"></text>
-                          <text id="labelBad"></text>
-                            <text id="title">life vest</text>
-                        <rect id="rect1" width = 540 height=80 fill="white" stroke="black" ></rect>
-                        <text id="text1" text-anchor="middle" dy="0.5em"></text>
-                        <rect id="rect2" x=540 width=60 height=80 fill="white" stroke="black"></rect>
-                        <text id="text2" text-anchor="middle"></text>
-                        <rect id="rect3" y=80 width=420 height=160 fill="white" stroke="black"></rect>
-                        <text id="text3" text-anchor="middle"></text>
-                        <rect id="rect4" y=80 x= 420 width=180 height=160 fill="white" stroke="black"></rect>
-                        <text id="text4" text-anchor="middle"></text>
-                        <g id="ratioBarTop">
-                            <g id="left"></g>
-                            <g id="right"></g>
-                        </g>
-                        <g id="ratioBarBottom">
-                              <g id="left"></g>
-                              <g id="right"></g>
-                          </g>
-                        <g id="ratioBarSide">
-                              <g id="top"></g>
-                              <g id="bottom"></g>
-                          </g>
-                      </g>
-                      <g id="groupRight">    
-                          <image id="bg_img"></image> 
-                          <text id="labelGood"></text>
-                          <text id="labelBad"></text> 
-                              <text id="title">no life vest</text>
-                              <rect id="rect1" width = 540 height=80 fill="white" stroke="black" ></rect>
-                              <text id="text1" text-anchor="middle"></text>
-                              <rect id="rect2" x=540 width=60 height=80 fill="white" stroke="black"></rect>
-                              <text id="text2" text-anchor="middle"></text>
-                              <rect id="rect3" y=80 width=420 height=160 fill="white" stroke="black"></rect>
-                              <text id="text3" text-anchor="middle"></text>
-                              <rect id="rect4" y=80 x= 420 width=180 height=160 fill="white" stroke="black"></rect>
-                              <text id="text4" text-anchor="middle"></text>
-                              <g id="ratioBarTop">
-                                      <g id="left"></g>
-                                      <g id="right"></g>
-                                  </g>
-                              <g id="ratioBarBottom">
-                                      <g id="left"></g>
-                                      <g id="right"></g>
-                                  </g>
-                              <g id="ratioBarSide">
-                                      <g id="top"></g>
-                                      <g id="bottom"></g>
-                                  </g>
-                            </g>
-                          </g>
-                      </svg></figure>
-                      <script src="playground_general.js"></script>
+
 
 <!--// activate animations if elements come into view-->
                       
@@ -732,10 +703,10 @@ if (window.addEventListener) {
 <h2>Which cake do you want?</h2>
 
 <p>In the last two examples (i.e. kidney stones and sailors in distress), we were confronted with conflicting information: Treatment A was 
-better for each subcategory of kidney stones but treatment B was better overall. Sailors were more likely to be rescued in both good and bad weather if they were wearing a life vest but overall they were less likely to be saved if they wore no life vest. </p> 
+better for each subcategory of kidney stones but treatment B was better overall. Any given sailor (wearing a life vest or not) was more likely to be rescued in good weather but <i>overall</i> they were less likely to be saved in good weather. </p> 
 <p>Statistics is not only done for describing what is but often also for providing decision guidance: A patient with kidney stones trying to decide whether to pick treatment A or B would like to have a helpful statistical study giving some clue on which will most likely work better. 
-<p>This means that she has to choose whether to "trust" the statistics with more detailed information (i.e. specified to a kidney stone size or weather conditions) or the one with ignored information (which ignored subcategories). In both examples it made more sense to use the statistics with more information: We were interested in individual wellfare, i.e. the recovery probability of each patient and the survival chances of each sailor. As every individual person is in a specific category (kidney stone size or weather condition), we had to choose the statistics which considered this piece of information.</p>
-<p>Now of course, "trusting" a statistics does not make any sense; Both statistics are fully correct, but one is misleading for a decision maker.</p>
+<p>This means that she has to choose whether to "trust" the statistics with more detailed information (i.e. specified to a kidney stone size or weather conditions) or the one with ignored information (which ignored subcategories). In both examples it made more sense to use the statistics with more information: We were interested in individual welfare, i.e. the recovery probability of each patient and the survival chances of each sailor. As every individual person is in a specific category (kidney stone size or weather condition), we had to choose the statistics which considered this piece of information.</p>
+<p>Now of course, "trusting" a statistics does not make any sense; both statistics are fully correct, but one is misleading for a decision maker.</p>
 <p>Now we need to be careful not to generalize this. "More information" is not necessarily better. We can construct an example of Simpson's paradox where it makes more sense to trust the statistics ignoring subcategories. </p>
 
 <p>We put ourselves in the shoes of someone tempted by a choice of cake: A juicy carrot cake and a delicious melty chocolate cake. He is supposed to be watching his weight so he would like to minimize the amount of fat he will ingest. Luckily, the cafe has provided a helpful chart depicting the fat content of each cake, even broken down on the two components of both cakes, batter and frosting.
@@ -748,7 +719,7 @@ better for each subcategory of kidney stones but treatment B was better overall.
                     
                     <script>//
                     
-    var dataACake = {Nx: 1, Ny: 1, Nx11: 0.75, Nx12: 0.25, Nx21: 0.15, Nx22: 0.85, Ny1: 0.33, Ny2: 0.67};
+    var dataACake = {Nx: 1, Ny: 1, Nx11: 0.75, Nx12: 0.25, Nx21: 0.21, Nx22: 0.79, Ny1: 0.33, Ny2: 0.67};
     var dataBCake = {Nx: 1, Ny: 1, Nx11: 0.9, Nx12: 0.1, Nx21: 0.3, Nx22: 0.7, Ny1: 0.10, Ny2: 0.9};
                     var newColors = [d3.hcl(75, 80, 75), d3.hcl(75, 50, 85), d3.hcl(250, 80, 60), d3.hcl(250, 20, 70)];
 
@@ -805,9 +776,160 @@ better for each subcategory of kidney stones but treatment B was better overall.
                       </script>
 
     <p>
-    Our guy can see that both batter and frosting of the carrot cake have a lower proportion of fat than the chocolate cake's batter and frosting. But overall, the carrot cake has a higher percentage of fat. Now obviously, the correct choice (at least with respect to avoiding fat) would be the chocolate cake. The "statistics with more information", i.e. the one considering each subcategory, is the misleading one in this context.
+    Our guy can see that both batter and frosting of the carrot cake have a lower proportion of fat than the chocolate cake's batter 
+    and frosting. But overall, the carrot cake has a higher percentage of fat: The carrot cake contains 33%*75% + 67%*21% = <b>39%</b> fat, while the chocolate cake contains 10%*90%+90%*30% = <b>36%</b> fat. Now obviously, the correct choice (at least with respect 
+    to avoiding fat) would be the chocolate cake. The "statistics with more information", i.e. the one considering each subcategory, is the misleading one in this context.
     </p>
+    <hr>
+    <h2>Gender bias in grad school admissions</h2>
+    <p>We consider a generic university being sued for discrimination of female applicants for their graduate programs. For simplicity we assume the university only has 
+      programs in mathematics and chemistry. 
+      </p>
+      <p>Let's say the university's administration actually finds that overall, <i>male applicants are accepted with a higher probability</i> than female applicants. The university president gives a stern talking to
+        to both the chemistry and the maths department heads but both claim that their respective programs are actually slightly biased <i>in favor of female applicants.</i>
+      </p>
+      <p>By now you probably are already an expert in how this works.</p>
+      <blockquote class="assignment">Exploration: Set the parameters such that female applicants are seemingly discriminated against.
+        </blockquote>
+      Try to achieve the following:
+      <ul>
+          <li>Female applicants are <i>more likely to be accepted</i> into the math department's grad program (the sliders won't let you choose otherwise anyway)</li>
+          <li>Female applicants are <i>more likely to be accepted</i> into the chemistry department's grad program (the sliders enforce also this condition)</li>
+          <li>Overall, female applicants <i>are less likely to be accepted</i> in "any" graduate program.</li>
+      </ul>
+      <p>Use your intuition from the last examples to see how this could happen and set the parameters accordingly.</p>
+    <div class="row">
+                             <div class="column">
+                                 <table>
+                                    <caption>Female applicants</caption>
+                                 <tr>
+                                         <td>Fraction of applicants applying for math</td>
+                                         <td><input type="range" min="0" max="100" value="50" step="0.01" class="slider" id="rangeRatioA1_general"></td>
+                                         <td><span id="indicator1_general"></span></td>
+                                 </tr>
+                                 <tr>
+                                         <td>Acceptance probability in math</td>
+                                         <td><input type="range" min="0" max="100" value="80" class="slider" disabled=true style="background-color:  #d3d3d3" id="rangeSuccA1_general"></td>
+                                         <td><span id="indicator3_general"></span></td>
+                                 </tr>
+                                 <tr>
+                                         <td>Acceptance probability in chemistry</td>
+                                         <td><input type="range" min="0" max="100" value="75" class="slider" disabled=true style="background-color:  #d3d3d3" id="rangeSuccA2_general"></td>
+                                         <td><span id="indicator4_general"></span></td>
+                                 </tr>
+                             </table>
+                             </div>
+                             <div class="column">
+                                     <table>
+                                       <caption>Male applicants</caption>
+                                             <tr>
+                                                <td>Fraction of applicants applying for math</td>
+                                                     <td><input type="range" min="0" max="100" width="20px" value="50" class="slider" id="rangeRatioB1_general"></td>
+                                                     <td><span id="indicator2_general"></span></td>
+                                             </tr>
+                                             <tr>
+                                                <td>Acceptance probability in math</td>
+                                                     <td><input type="range" min="0" max="79" value="50" class="slider" id="rangeSuccB1_general"></td>
+                                                     <td><span id="indicator5_general"></span></td>
+                                             </tr>
+                                             <tr>
+                                                <td>Acceptance probability in chemistry</td>
+                                                     <td><input type="range" min="0" max="74" value="50" class="slider" id="rangeSuccB2_general"></td>
+                                                     <td><span id="indicator6_general"></span></td>
+                                             </tr>
+                                         </table>
+                             </div>
+                           </div> 
+                           
+                         <figure>
+                         <svg id="figPlayground_general" onclick="" style="background: grey">    
+                             <g id="giantGroup">
+                           <g id="groupLeft">      
+                               <image id="bg_img"></image> 
+                             <text id="labelGood"></text>
+                             <text id="labelBad"></text>
+                               <text id="title">life vest</text>
+                           <rect id="rect1" width = 540 height=80 fill="white" stroke="black" ></rect>
+                           <text id="text1" text-anchor="middle" dy="0.5em"></text>
+                           <rect id="rect2" x=540 width=60 height=80 fill="white" stroke="black"></rect>
+                           <text id="text2" text-anchor="middle"></text>
+                           <rect id="rect3" y=80 width=420 height=160 fill="white" stroke="black"></rect>
+                           <text id="text3" text-anchor="middle"></text>
+                           <rect id="rect4" y=80 x= 420 width=180 height=160 fill="white" stroke="black"></rect>
+                           <text id="text4" text-anchor="middle"></text>
+                           <g id="ratioBarTop">
+                               <g id="left"></g>
+                               <g id="right"></g>
+                           </g>
+                           <g id="ratioBarBottom">
+                                 <g id="left"></g>
+                                 <g id="right"></g>
+                             </g>
+                           <g id="ratioBarSide">
+                                 <g id="top"></g>
+                                 <g id="bottom"></g>
+                             </g>
+                         </g>
+                         <g id="groupRight">    
+                             <image id="bg_img"></image> 
+                             <text id="labelGood"></text>
+                             <text id="labelBad"></text> 
+                                 <text id="title">no life vest</text>
+                                 <rect id="rect1" width = 540 height=80 fill="white" stroke="black" ></rect>
+                                 <text id="text1" text-anchor="middle"></text>
+                                 <rect id="rect2" x=540 width=60 height=80 fill="white" stroke="black"></rect>
+                                 <text id="text2" text-anchor="middle"></text>
+                                 <rect id="rect3" y=80 width=420 height=160 fill="white" stroke="black"></rect>
+                                 <text id="text3" text-anchor="middle"></text>
+                                 <rect id="rect4" y=80 x= 420 width=180 height=160 fill="white" stroke="black"></rect>
+                                 <text id="text4" text-anchor="middle"></text>
+                                 <g id="ratioBarTop">
+                                         <g id="left"></g>
+                                         <g id="right"></g>
+                                     </g>
+                                 <g id="ratioBarBottom">
+                                         <g id="left"></g>
+                                         <g id="right"></g>
+                                     </g>
+                                 <g id="ratioBarSide">
+                                         <g id="top"></g>
+                                         <g id="bottom"></g>
+                                     </g>
+                               </g>
+                             </g>
+                         </svg></figure>
+                         <table class="fixed">
+                            <tr>
+                              <td><span>Total acceptance probability for female applicants:   </span></td>
+                              <td align="center">
+                                  <span id="totalRatioA_general"></span></td>
+                            </tr>
+                            <tr>
+                              <td><span>Total acceptance probability for male applicants:  </span></td>
+                              <td align="center">
+                                  <span id="totalRatioB_general"></span></td>
+                            </tr></tr>
+                          </table>
+                          
+                      <p id="explanation_general"></p>
+                          <script src="playground_general.js"></script> 
+                    <hr>
+                    <h2>Acknowledgements and comments</h2>
+                    <p>
+                    I had the idea for this explorable after reading Michael Nielsen's wonderful essay <a href="http://michaelnielsen.org/reinventing_explanation/">Reinventing explanation</a>. He also suggested
+                      to use an "emotional situation" where we can empathize with the characters being confronted with Simpson's paradox. This is the reason for the goofy introductory comic which may look
+                      like a poor imitation of Randall Munroe's style of drawing (which it is). After reading <a href="https://blog.polytrope.com/too-many-words/">Too Many Words</a> by Christopher Walker I tried to cut down on 
+                      text accompanying figures.</p>
 
+                      <p>All the examples are either standard examples for Simpson's paradox (see the corresponding Wikipedia page) or my own concoction. Although some examples are similar to known real-world examples,
+                      all concrete numbers used are entirely artificial (mostly in order to be able to work with nicer numbers).</p>
 
-
+                      <p>I had to learn HTML, Java Script and D3 from scratch in order to implement the kind of interactive diagrams I had in mind. So, please, for the love of god, do not look at the source
+                      code. It is badly hacked together and reprehensibly badly commented. </p>
+                      
+                      <p>There is a lot of room for improvement in this explorable, e.g. better reactive highlighting, or maybe some more 
+                      comic panels interspersed with the rest of the document which continue the story of our stats lady and her "patient". 
+                      It would also make sense to think about causality in the form of graphical networks (as described in Judea Pearl, "Causal inference in statistics: An overview") but this would
+                      make the text a lot longer (maybe this could be part 2?).
+                       If you have any remarks, questions, suggestions for improvement and/or would like to complain on me sucking at drawing, please comment below.</p>
                     </body>

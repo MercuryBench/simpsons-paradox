@@ -568,6 +568,21 @@ var buildGroup = function(groupref, data, graphicalData, tooltip_ref, noRect=fal
             return tooltip_ref.attr("visibility", "visible");})
         //.on("mousemove", function(){tooltip.attr("x", d3.mouse(this)[0]).attr("y",d3.mouse(this)[1]);console.log(1)})
         .on("mouseout", function(){return tooltip_ref.attr("visibility", "hidden");});
+    
+    fig.append("g")
+            .attr("id", "hoverGroup")
+            .attr("visibility", "hidden")
+    
+    fig.select("#hoverGroup").append("rect")
+            .attr("width", 100)
+            .attr("height", 30)
+            .style("fill", "green")
+    fig.select("#hoverGroup").append("text")
+            .text("bla")
+            .attr("y", 15)
+            .attr("dy", "0.3em")
+            .style("font-weight", "bold")
+    
 
     return fig
 
@@ -590,7 +605,7 @@ var buildFigure = function(reffig, dataLeft, dataRight, graphicalDataLeft, graph
         .text(graphicalDataLeft.titleRight)
         .attr("dy", "2em")
         .style("font-size", "20px")
-    var tooltip = reffig.append("g").attr("id", "tooltip")
+    var tooltip = reffig.append("g").attr("id", "tooltip").attr("transform", "translate(0,0)")
         .attr("visibility", "hidden")
     var groupLeft = buildGroup(reffig.select("#groupLeft"), dataLeft, graphicalDataLeft, tooltip, noRect=noRect)
     var groupRight = buildGroup(reffig.select("#groupRight"), dataRight, graphicalDataRight, tooltip, noRect=noRect)
@@ -626,6 +641,7 @@ var buildFigure = function(reffig, dataLeft, dataRight, graphicalDataLeft, graph
     tooltip.append("text")
         .text("a simple tooltip")
         .attr("y", tooltipH/2)
+        .attr("dy", "0.25em")
         .attr("dx", "1em")
         //.attr("x", tooltipW/2)
         //.attr("text-anchor", "middle")
